@@ -23,18 +23,18 @@ const ProductCard = ({ id, name, price, image, category }: ProductCardProps) => 
           />
         </div>
       </Link>
-      <CardContent className="p-3">
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">{category}</p>
+      <CardContent className="p-2">
+        <p className="text-[9px] text-muted-foreground uppercase tracking-wider mb-0">{category}</p>
         <Link to={`/product/${id}`}>
-          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
+          <h3 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors line-clamp-1">
             {name}
           </h3>
         </Link>
-        <p className="text-base font-bold text-primary mt-1">${price.toFixed(2)}</p>
+        <p className="text-sm font-bold text-primary mt-0.5">${price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter className="p-3 pt-0">
-        <Button className="w-full h-8 text-xs" size="sm">
-          <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
+      <CardFooter className="p-2 pt-0">
+        <Button className="w-full h-7 text-[10px]" size="sm">
+          <ShoppingCart className="mr-1 h-3 w-3" />
           Add to Cart
         </Button>
       </CardFooter>
