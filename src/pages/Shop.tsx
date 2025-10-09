@@ -34,21 +34,19 @@ const Shop = () => {
     <div className="min-h-screen bg-background">
       <Header cartItemCount={0} />
       
-      <main className="container py-10">
-        <div className="mb-10">
-          <h1 className="text-5xl font-bold text-foreground mb-3">Shop All Products</h1>
-          <p className="text-muted-foreground text-lg">Browse our complete collection of premium fashion</p>
+      <main className="container py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-2">Shop All Products</h1>
+          <p className="text-muted-foreground">Browse our complete collection</p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 mb-10 items-start lg:items-center justify-between">
-          <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="flex flex-wrap gap-2">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category)}
-                className="transition-all hover:scale-105"
-                size="lg"
               >
                 {category}
               </Button>
@@ -56,10 +54,10 @@ const Shop = () => {
           </div>
           
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full lg:w-56 h-11">
+            <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
-            <SelectContent className="bg-popover">
+            <SelectContent>
               <SelectItem value="featured">Featured</SelectItem>
               <SelectItem value="price-low">Price: Low to High</SelectItem>
               <SelectItem value="price-high">Price: High to Low</SelectItem>
@@ -68,7 +66,7 @@ const Shop = () => {
           </Select>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
           {filteredProducts.map((product) => (
             <ProductCard key={product.id} {...product} />
           ))}
