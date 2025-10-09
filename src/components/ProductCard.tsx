@@ -15,7 +15,7 @@ const ProductCard = ({ id, name, price, image, category }: ProductCardProps) => 
   return (
     <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/20">
       <Link to={`/product/${id}`}>
-        <div className="aspect-[3/4] overflow-hidden bg-secondary">
+        <div className="aspect-square overflow-hidden bg-secondary">
           <img 
             src={image} 
             alt={name}
