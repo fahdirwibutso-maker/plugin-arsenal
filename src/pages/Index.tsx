@@ -4,12 +4,12 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
 
-// Featured products
+// Featured boutique products
 const featuredProducts = [
-  { id: 1, name: "Arsenal Home Jersey 23/24", price: 89.99, image: "/placeholder.svg", category: "Jerseys" },
-  { id: 2, name: "Arsenal Away Jersey 23/24", price: 89.99, image: "/placeholder.svg", category: "Jerseys" },
-  { id: 3, name: "Arsenal Training Kit", price: 64.99, image: "/placeholder.svg", category: "Training" },
-  { id: 4, name: "Arsenal Hoodie", price: 54.99, image: "/placeholder.svg", category: "Apparel" },
+  { id: 1, name: "Silk Evening Dress", price: 189.99, image: "/placeholder.svg", category: "Dresses" },
+  { id: 2, name: "Cashmere Sweater", price: 149.99, image: "/placeholder.svg", category: "Tops" },
+  { id: 3, name: "Leather Handbag", price: 229.99, image: "/placeholder.svg", category: "Bags" },
+  { id: 4, name: "Designer Sunglasses", price: 159.99, image: "/placeholder.svg", category: "Accessories" },
 ];
 
 const Index = () => {
@@ -22,12 +22,12 @@ const Index = () => {
         <div className="container">
           <div className="max-w-3xl">
             <h1 className="text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Arsenal Official
-              <span className="text-primary block">Shop</span>
+              Elegant Style
+              <span className="text-primary block">Boutique</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Get the latest official Arsenal merchandise. From jerseys to accessories, 
-              show your support for the Gunners.
+              Discover curated collections of premium fashion. From evening wear to everyday elegance, 
+              find your perfect style.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/shop">
@@ -107,10 +107,10 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-br from-primary to-primary/80">
         <div className="container text-center">
           <h2 className="text-4xl font-bold text-primary-foreground mb-4">
-            Join the Arsenal Family
+            Join Our Exclusive Circle
           </h2>
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-            Sign up for exclusive offers, early access to new products, and more
+            Sign up for exclusive offers, early access to new collections, and styling tips
           </p>
           <Button size="lg" variant="secondary" className="text-base">
             Sign Up Now

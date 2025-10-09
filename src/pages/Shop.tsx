@@ -4,19 +4,23 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Mock product data
+// Mock boutique product data
 const products = [
-  { id: 1, name: "Arsenal Home Jersey 23/24", price: 89.99, image: "/placeholder.svg", category: "Jerseys" },
-  { id: 2, name: "Arsenal Away Jersey 23/24", price: 89.99, image: "/placeholder.svg", category: "Jerseys" },
-  { id: 3, name: "Arsenal Training Kit", price: 64.99, image: "/placeholder.svg", category: "Training" },
-  { id: 4, name: "Arsenal Hoodie", price: 54.99, image: "/placeholder.svg", category: "Apparel" },
-  { id: 5, name: "Arsenal Cap", price: 24.99, image: "/placeholder.svg", category: "Accessories" },
-  { id: 6, name: "Arsenal Scarf", price: 19.99, image: "/placeholder.svg", category: "Accessories" },
-  { id: 7, name: "Arsenal Football", price: 29.99, image: "/placeholder.svg", category: "Equipment" },
-  { id: 8, name: "Arsenal Water Bottle", price: 14.99, image: "/placeholder.svg", category: "Accessories" },
+  { id: 1, name: "Silk Evening Dress", price: 189.99, image: "/placeholder.svg", category: "Dresses" },
+  { id: 2, name: "Cashmere Sweater", price: 149.99, image: "/placeholder.svg", category: "Tops" },
+  { id: 3, name: "Leather Handbag", price: 229.99, image: "/placeholder.svg", category: "Bags" },
+  { id: 4, name: "Designer Sunglasses", price: 159.99, image: "/placeholder.svg", category: "Accessories" },
+  { id: 5, name: "Tailored Blazer", price: 199.99, image: "/placeholder.svg", category: "Outerwear" },
+  { id: 6, name: "Satin Blouse", price: 89.99, image: "/placeholder.svg", category: "Tops" },
+  { id: 7, name: "High-Waist Trousers", price: 119.99, image: "/placeholder.svg", category: "Bottoms" },
+  { id: 8, name: "Pearl Necklace", price: 179.99, image: "/placeholder.svg", category: "Jewelry" },
+  { id: 9, name: "Suede Ankle Boots", price: 169.99, image: "/placeholder.svg", category: "Shoes" },
+  { id: 10, name: "Cocktail Dress", price: 209.99, image: "/placeholder.svg", category: "Dresses" },
+  { id: 11, name: "Wool Coat", price: 289.99, image: "/placeholder.svg", category: "Outerwear" },
+  { id: 12, name: "Silk Scarf", price: 69.99, image: "/placeholder.svg", category: "Accessories" },
 ];
 
-const categories = ["All", "Jerseys", "Training", "Apparel", "Accessories", "Equipment"];
+const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Bags", "Shoes", "Jewelry", "Accessories"];
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");

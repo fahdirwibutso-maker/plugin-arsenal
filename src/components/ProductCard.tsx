@@ -15,7 +15,7 @@ const ProductCard = ({ id, name, price, image, category }: ProductCardProps) => 
   return (
     <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/20">
       <Link to={`/product/${id}`}>
-        <div className="aspect-square overflow-hidden bg-secondary">
+        <div className="aspect-[3/4] overflow-hidden bg-secondary">
           <img 
             src={image} 
             alt={name}
@@ -23,18 +23,18 @@ const ProductCard = ({ id, name, price, image, category }: ProductCardProps) => 
           />
         </div>
       </Link>
-      <CardContent className="p-4">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{category}</p>
+      <CardContent className="p-3">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">{category}</p>
         <Link to={`/product/${id}`}>
-          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
             {name}
           </h3>
         </Link>
-        <p className="text-lg font-bold text-primary mt-2">${price.toFixed(2)}</p>
+        <p className="text-base font-bold text-primary mt-1">${price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <Button className="w-full" size="sm">
-          <ShoppingCart className="mr-2 h-4 w-4" />
+      <CardFooter className="p-3 pt-0">
+        <Button className="w-full h-8 text-xs" size="sm">
+          <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
           Add to Cart
         </Button>
       </CardFooter>
