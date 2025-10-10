@@ -7,9 +7,13 @@ import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
 // Featured products
 const featuredProducts = [
   { id: 1, name: "Organic Apples", price: 4.99, image: "/placeholder.svg", category: "Fresh Fruits" },
-  { id: 2, name: "Fresh Milk", price: 3.49, image: "/placeholder.svg", category: "Dairy" },
+  { id: 2, name: "Fresh Milk 2L", price: 3.49, image: "/placeholder.svg", category: "Dairy" },
   { id: 3, name: "Whole Wheat Bread", price: 2.99, image: "/placeholder.svg", category: "Bakery" },
-  { id: 4, name: "Orange Juice", price: 5.99, image: "/placeholder.svg", category: "Beverages" },
+  { id: 4, name: "Orange Juice 2L", price: 5.99, image: "/placeholder.svg", category: "Beverages" },
+  { id: 5, name: "Fresh Chicken", price: 12.99, image: "/placeholder.svg", category: "Meat" },
+  { id: 6, name: "Strawberries", price: 6.99, image: "/placeholder.svg", category: "Fresh Fruits" },
+  { id: 7, name: "Cheddar Cheese", price: 6.99, image: "/placeholder.svg", category: "Dairy" },
+  { id: 8, name: "Coca Cola 2L", price: 3.99, image: "/placeholder.svg", category: "Beverages" },
 ];
 
 const Index = () => {
