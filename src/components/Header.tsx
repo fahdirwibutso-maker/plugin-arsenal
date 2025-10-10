@@ -1,4 +1,4 @@
-import { ShoppingCart, Search, Menu, X, User } from "lucide-react";
+import { ShoppingCart, Search, Menu, X, User, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +10,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface HeaderProps {
   cartItemCount?: number;
+  isWholesale?: boolean;
+  onWholesaleToggle?: (value: boolean) => void;
 }
 
-const Header = ({ cartItemCount = 0 }: HeaderProps) => {
+const Header = ({ cartItemCount = 0, isWholesale = false, onWholesaleToggle }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
@@ -52,6 +56,22 @@ const Header = ({ cartItemCount = 0 }: HeaderProps) => {
         
         {/* Right Side Actions */}
         <div className="flex items-center gap-3">
+          {/* Wholesale/Retail Toggle */}
+          <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border">
+            <Label htmlFor="wholesale-mode" className="text-sm font-medium flex items-center gap-1.5 cursor-pointer">
+              <Package className="h-4 w-4 text-primary" />
+              <span className={!isWholesale ? "text-muted-foreground" : ""}>Retail</span>
+            </Label>
+            <Switch 
+              id="wholesale-mode" 
+              checked={isWholesale}
+              onCheckedChange={onWholesaleToggle}
+            />
+            <span className={isWholesale ? "text-primary font-semibold" : "text-muted-foreground"}>
+              Wholesale
+            </span>
+          </div>
+          
           {/* Search Bar - Desktop */}
           <div className="hidden md:flex items-center gap-2">
             <div className="relative">
@@ -109,6 +129,22 @@ const Header = ({ cartItemCount = 0 }: HeaderProps) => {
                     placeholder="Search products..." 
                     className="w-full"
                   />
+                </div>
+                <div className="pt-4 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="wholesale-mode-mobile" className="text-sm font-medium flex items-center gap-2">
+                      <Package className="h-4 w-4 text-primary" />
+                      Wholesale Mode
+                    </Label>
+                    <Switch 
+                      id="wholesale-mode-mobile" 
+                      checked={isWholesale}
+                      onCheckedChange={onWholesaleToggle}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {isWholesale ? "Bulk pricing active" : "Retail pricing active"}
+                  </p>
                 </div>
               </nav>
             </SheetContent>

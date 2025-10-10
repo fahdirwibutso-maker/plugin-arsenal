@@ -94,6 +94,7 @@ const categories = ["All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Baker
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
+  const [isWholesale, setIsWholesale] = useState(false);
 
   const filteredProducts = selectedCategory === "All" 
     ? products 
@@ -101,12 +102,26 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header cartItemCount={0} />
+      <Header 
+        cartItemCount={0} 
+        isWholesale={isWholesale}
+        onWholesaleToggle={setIsWholesale}
+      />
       
       <main className="container py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Shop Fresh & Quality Products</h1>
-          <p className="text-muted-foreground">Browse our complete range of groceries, beverages, and fresh produce</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-foreground mb-2">Shop Fresh & Quality Products</h1>
+              <p className="text-muted-foreground">Browse our complete range of groceries, beverages, and fresh produce</p>
+            </div>
+            {isWholesale && (
+              <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-2">
+                <p className="text-sm font-semibold text-primary">🏪 Wholesale Mode Active</p>
+                <p className="text-xs text-muted-foreground">Bulk pricing • Min. quantities apply</p>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">
@@ -137,7 +152,11 @@ const Shop = () => {
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
           {filteredProducts.map((product) => (
-            <ProductCard key={product.id} {...product} />
+            <ProductCard 
+              key={product.id} 
+              {...product} 
+              isWholesale={isWholesale}
+            />
           ))}
         </div>
       </main>

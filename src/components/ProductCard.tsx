@@ -9,9 +9,14 @@ interface ProductCardProps {
   price: number;
   image: string;
   category: string;
+  isWholesale?: boolean;
 }
 
-const ProductCard = ({ id, name, price, image, category }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, category, isWholesale = false }: ProductCardProps) => {
+  const wholesaleDiscount = 0.25; // 25% discount for wholesale
+  const displayPrice = isWholesale ? price * (1 - wholesaleDiscount) : price;
+  const minWholesaleQty = 10;
+  
   return (
     <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/20">
       <Link to={`/product/${id}`}>
@@ -30,7 +35,15 @@ const ProductCard = ({ id, name, price, image, category }: ProductCardProps) => 
             {name}
           </h3>
         </Link>
-        <p className="text-sm font-bold text-primary mt-0.5">${price.toFixed(2)}</p>
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <p className="text-sm font-bold text-primary">${displayPrice.toFixed(2)}</p>
+          {isWholesale && (
+            <p className="text-[9px] text-muted-foreground line-through">${price.toFixed(2)}</p>
+          )}
+        </div>
+        {isWholesale && (
+          <p className="text-[8px] text-primary/70 mt-0.5">Min: {minWholesaleQty} units</p>
+        )}
       </CardContent>
       <CardFooter className="p-2 pt-0">
         <Button className="w-full h-7 text-[10px]" size="sm">

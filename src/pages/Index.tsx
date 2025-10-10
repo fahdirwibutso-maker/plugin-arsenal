@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
@@ -17,9 +18,15 @@ const featuredProducts = [
 ];
 
 const Index = () => {
+  const [isWholesale, setIsWholesale] = useState(false);
+  
   return (
     <div className="min-h-screen bg-background">
-      <Header cartItemCount={0} />
+      <Header 
+        cartItemCount={0} 
+        isWholesale={isWholesale}
+        onWholesaleToggle={setIsWholesale}
+      />
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/10 via-background to-background py-20 lg:py-32">
@@ -101,7 +108,11 @@ const Index = () => {
           
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
             {featuredProducts.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard 
+                key={product.id} 
+                {...product} 
+                isWholesale={isWholesale}
+              />
             ))}
           </div>
         </div>
