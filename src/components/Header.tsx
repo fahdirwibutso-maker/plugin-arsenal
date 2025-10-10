@@ -32,8 +32,8 @@ const Header = ({ cartItemCount = 0 }: HeaderProps) => {
         {/* Logo and Desktop Navigation */}
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-primary/80" />
-            <span className="text-xl font-bold text-foreground">Elegant Boutique</span>
+            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+            <span className="text-xl font-bold text-foreground">FreshMart</span>
           </Link>
           
           {/* Desktop Navigation */}

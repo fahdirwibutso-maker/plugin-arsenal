@@ -4,23 +4,27 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-// Mock boutique product data
+// Supermarket product data
 const products = [
-  { id: 1, name: "Silk Evening Dress", price: 189.99, image: "/placeholder.svg", category: "Dresses" },
-  { id: 2, name: "Cashmere Sweater", price: 149.99, image: "/placeholder.svg", category: "Tops" },
-  { id: 3, name: "Leather Handbag", price: 229.99, image: "/placeholder.svg", category: "Bags" },
-  { id: 4, name: "Designer Sunglasses", price: 159.99, image: "/placeholder.svg", category: "Accessories" },
-  { id: 5, name: "Tailored Blazer", price: 199.99, image: "/placeholder.svg", category: "Outerwear" },
-  { id: 6, name: "Satin Blouse", price: 89.99, image: "/placeholder.svg", category: "Tops" },
-  { id: 7, name: "High-Waist Trousers", price: 119.99, image: "/placeholder.svg", category: "Bottoms" },
-  { id: 8, name: "Pearl Necklace", price: 179.99, image: "/placeholder.svg", category: "Jewelry" },
-  { id: 9, name: "Suede Ankle Boots", price: 169.99, image: "/placeholder.svg", category: "Shoes" },
-  { id: 10, name: "Cocktail Dress", price: 209.99, image: "/placeholder.svg", category: "Dresses" },
-  { id: 11, name: "Wool Coat", price: 289.99, image: "/placeholder.svg", category: "Outerwear" },
-  { id: 12, name: "Silk Scarf", price: 69.99, image: "/placeholder.svg", category: "Accessories" },
+  { id: 1, name: "Organic Apples", price: 4.99, image: "/placeholder.svg", category: "Fresh Fruits" },
+  { id: 2, name: "Fresh Milk", price: 3.49, image: "/placeholder.svg", category: "Dairy" },
+  { id: 3, name: "Whole Wheat Bread", price: 2.99, image: "/placeholder.svg", category: "Bakery" },
+  { id: 4, name: "Orange Juice", price: 5.99, image: "/placeholder.svg", category: "Beverages" },
+  { id: 5, name: "Fresh Chicken", price: 12.99, image: "/placeholder.svg", category: "Meat" },
+  { id: 6, name: "Cheddar Cheese", price: 6.99, image: "/placeholder.svg", category: "Dairy" },
+  { id: 7, name: "Bananas", price: 2.49, image: "/placeholder.svg", category: "Fresh Fruits" },
+  { id: 8, name: "Coca Cola 2L", price: 3.99, image: "/placeholder.svg", category: "Beverages" },
+  { id: 9, name: "Ground Beef", price: 15.99, image: "/placeholder.svg", category: "Meat" },
+  { id: 10, name: "Greek Yogurt", price: 4.49, image: "/placeholder.svg", category: "Dairy" },
+  { id: 11, name: "Croissants", price: 5.99, image: "/placeholder.svg", category: "Bakery" },
+  { id: 12, name: "Fresh Tomatoes", price: 3.99, image: "/placeholder.svg", category: "Vegetables" },
+  { id: 13, name: "Pepsi 2L", price: 3.99, image: "/placeholder.svg", category: "Beverages" },
+  { id: 14, name: "Carrots", price: 2.99, image: "/placeholder.svg", category: "Vegetables" },
+  { id: 15, name: "White Rice 5kg", price: 12.99, image: "/placeholder.svg", category: "Pantry" },
+  { id: 16, name: "Pasta", price: 1.99, image: "/placeholder.svg", category: "Pantry" },
 ];
 
-const categories = ["All", "Dresses", "Tops", "Bottoms", "Outerwear", "Bags", "Shoes", "Jewelry", "Accessories"];
+const categories = ["All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery", "Beverages", "Pantry"];
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -36,8 +40,8 @@ const Shop = () => {
       
       <main className="container py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Shop All Products</h1>
-          <p className="text-muted-foreground">Browse our complete collection</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Shop Fresh & Quality Products</h1>
+          <p className="text-muted-foreground">Browse our complete range of groceries, beverages, and fresh produce</p>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">

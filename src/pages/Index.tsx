@@ -4,12 +4,12 @@ import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
 
-// Featured boutique products
+// Featured products
 const featuredProducts = [
-  { id: 1, name: "Silk Evening Dress", price: 189.99, image: "/placeholder.svg", category: "Dresses" },
-  { id: 2, name: "Cashmere Sweater", price: 149.99, image: "/placeholder.svg", category: "Tops" },
-  { id: 3, name: "Leather Handbag", price: 229.99, image: "/placeholder.svg", category: "Bags" },
-  { id: 4, name: "Designer Sunglasses", price: 159.99, image: "/placeholder.svg", category: "Accessories" },
+  { id: 1, name: "Organic Apples", price: 4.99, image: "/placeholder.svg", category: "Fresh Fruits" },
+  { id: 2, name: "Fresh Milk", price: 3.49, image: "/placeholder.svg", category: "Dairy" },
+  { id: 3, name: "Whole Wheat Bread", price: 2.99, image: "/placeholder.svg", category: "Bakery" },
+  { id: 4, name: "Orange Juice", price: 5.99, image: "/placeholder.svg", category: "Beverages" },
 ];
 
 const Index = () => {
@@ -18,16 +18,16 @@ const Index = () => {
       <Header cartItemCount={0} />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/20 via-background to-background py-20 lg:py-32">
+      <section className="relative bg-gradient-to-br from-primary/10 via-background to-background py-20 lg:py-32">
         <div className="container">
           <div className="max-w-3xl">
             <h1 className="text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Elegant Style
-              <span className="text-primary block">Boutique</span>
+              Fresh Quality
+              <span className="text-primary block">Every Day</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Discover curated collections of premium fashion. From evening wear to everyday elegance, 
-              find your perfect style.
+              Your trusted supermarket for wholesale and retail. Fresh produce, quality groceries, 
+              and beverages at the best prices.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/shop">
@@ -37,7 +37,7 @@ const Index = () => {
                 </Button>
               </Link>
               <Button size="lg" variant="outline" className="text-base">
-                View Collections
+                Wholesale Pricing
               </Button>
             </div>
           </div>
@@ -53,8 +53,8 @@ const Index = () => {
                 <Truck className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Free Shipping</h3>
-                <p className="text-sm text-muted-foreground">On orders over $100</p>
+                <h3 className="font-semibold text-foreground">Fast Delivery</h3>
+                <p className="text-sm text-muted-foreground">Same-day delivery available</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -71,8 +71,8 @@ const Index = () => {
                 <CreditCard className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Easy Returns</h3>
-                <p className="text-sm text-muted-foreground">30-day return policy</p>
+                <h3 className="font-semibold text-foreground">Fresh Guarantee</h3>
+                <p className="text-sm text-muted-foreground">Quality freshness assured</p>
               </div>
             </div>
           </div>
@@ -104,13 +104,13 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary to-primary/80">
+      <section className="py-20 bg-gradient-to-br from-primary to-accent">
         <div className="container text-center">
           <h2 className="text-4xl font-bold text-primary-foreground mb-4">
-            Join Our Exclusive Circle
+            Join FreshMart Rewards
           </h2>
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-            Sign up for exclusive offers, early access to new collections, and styling tips
+            Get exclusive deals, wholesale pricing access, and earn points on every purchase
           </p>
           <Button size="lg" variant="secondary" className="text-base">
             Sign Up Now
