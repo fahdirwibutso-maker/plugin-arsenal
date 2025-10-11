@@ -109,8 +109,17 @@ const Shop = () => {
       );
     }
     
+    // Apply sorting
+    if (sortBy === "price-low") {
+      filtered = [...filtered].sort((a, b) => a.price - b.price);
+    } else if (sortBy === "price-high") {
+      filtered = [...filtered].sort((a, b) => b.price - a.price);
+    } else if (sortBy === "newest") {
+      filtered = [...filtered].reverse();
+    }
+    
     return filtered;
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory, searchQuery, sortBy]);
 
   return (
     <div className="min-h-screen bg-background">
