@@ -19,6 +19,7 @@ const featuredProducts = [
 
 const Index = () => {
   const [isWholesale, setIsWholesale] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   
   return (
     <div className="min-h-screen bg-background">
@@ -26,6 +27,8 @@ const Index = () => {
         cartItemCount={0} 
         isWholesale={isWholesale}
         onWholesaleToggle={setIsWholesale}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       
       {/* Hero Section */}

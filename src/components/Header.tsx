@@ -17,9 +17,17 @@ interface HeaderProps {
   cartItemCount?: number;
   isWholesale?: boolean;
   onWholesaleToggle?: (value: boolean) => void;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
-const Header = ({ cartItemCount = 0, isWholesale = false, onWholesaleToggle }: HeaderProps) => {
+const Header = ({ 
+  cartItemCount = 0, 
+  isWholesale = false, 
+  onWholesaleToggle,
+  searchQuery = "",
+  onSearchChange 
+}: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
@@ -80,14 +88,18 @@ const Header = ({ cartItemCount = 0, isWholesale = false, onWholesaleToggle }: H
                 type="search" 
                 placeholder="Search products..." 
                 className="w-64 pl-9"
+                value={searchQuery}
+                onChange={(e) => onSearchChange?.(e.target.value)}
               />
             </div>
           </div>
           
           {/* User Account */}
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
+          <Link to="/auth">
+            <Button variant="ghost" size="icon">
+              <User className="h-5 w-5" />
+            </Button>
+          </Link>
           
           {/* Cart */}
           <Link to="/cart">
@@ -128,6 +140,8 @@ const Header = ({ cartItemCount = 0, isWholesale = false, onWholesaleToggle }: H
                     type="search" 
                     placeholder="Search products..." 
                     className="w-full"
+                    value={searchQuery}
+                    onChange={(e) => onSearchChange?.(e.target.value)}
                   />
                 </div>
                 <div className="pt-4 border-t border-border">

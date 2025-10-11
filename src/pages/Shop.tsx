@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -95,10 +95,22 @@ const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
   const [isWholesale, setIsWholesale] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredProducts = selectedCategory === "All" 
-    ? products 
-    : products.filter(p => p.category === selectedCategory);
+  const filteredProducts = useMemo(() => {
+    let filtered = selectedCategory === "All" 
+      ? products
+      : products.filter(p => p.category === selectedCategory);
+    
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    return filtered;
+  }, [selectedCategory, searchQuery]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -106,6 +118,8 @@ const Shop = () => {
         cartItemCount={0} 
         isWholesale={isWholesale}
         onWholesaleToggle={setIsWholesale}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       
       <main className="container py-8">
