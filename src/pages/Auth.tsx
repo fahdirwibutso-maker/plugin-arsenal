@@ -16,7 +16,7 @@ const signupSchema = z.object({
 });
 
 const loginSchema = z.object({
-  username: z.string().trim().min(3, "Username required"),
+  phone: z.string().trim().min(10, "Phone number required"),
   password: z.string().min(6, "Password required"),
 });
 
@@ -30,7 +30,7 @@ const Auth = () => {
   const [signupPassword, setSignupPassword] = useState("");
   
   // Login form
-  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPhone, setLoginPhone] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -45,8 +45,8 @@ const Auth = () => {
 
       setIsLoading(true);
 
-      // Create a temporary email from username for auth
-      const email = `${validated.username}@freshmart.local`;
+      // Create a temporary email from phone for auth
+      const email = `${validated.phone}@freshmart.local`;
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -84,14 +84,14 @@ const Auth = () => {
     
     try {
       const validated = loginSchema.parse({
-        username: loginUsername,
+        phone: loginPhone,
         password: loginPassword,
       });
 
       setIsLoading(true);
 
-      // Convert username to email format
-      const email = `${validated.username}@freshmart.local`;
+      // Convert phone to email format
+      const email = `${validated.phone}@freshmart.local`;
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -137,13 +137,13 @@ const Auth = () => {
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-username">Username</Label>
+                  <Label htmlFor="login-phone">Phone Number</Label>
                   <Input
-                    id="login-username"
-                    type="text"
-                    value={loginUsername}
-                    onChange={(e) => setLoginUsername(e.target.value)}
-                    placeholder="Enter your username"
+                    id="login-phone"
+                    type="tel"
+                    value={loginPhone}
+                    onChange={(e) => setLoginPhone(e.target.value)}
+                    placeholder="Enter your phone number"
                     required
                   />
                 </div>

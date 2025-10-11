@@ -1,8 +1,10 @@
 import { ShoppingCart, Search, Menu, X, User, Package } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 import {
   Sheet,
   SheetContent,
@@ -29,6 +31,48 @@ const Header = ({
   onSearchChange 
 }: HeaderProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [username, setUsername] = useState<string>("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchUsername(session.user.id);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setTimeout(() => {
+          fetchUsername(session.user.id);
+        }, 0);
+      } else {
+        setUsername("");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchUsername = async (userId: string) => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('username')
+      .eq('user_id', userId)
+      .single();
+    
+    if (data) {
+      setUsername(data.username);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+  };
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -95,11 +139,20 @@ const Header = ({
           </div>
           
           {/* User Account */}
-          <Link to="/auth">
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
+          {user && username ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">{username}</span>
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Link to="/auth">
+              <Button variant="ghost" size="icon">
+                <User className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
           
           {/* Cart */}
           <Link to="/cart">
