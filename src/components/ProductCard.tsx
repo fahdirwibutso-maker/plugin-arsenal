@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: number;
@@ -16,6 +18,51 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
   const wholesaleDiscount = 0.25; // 25% discount for wholesale
   const displayPrice = isWholesale ? price * (1 - wholesaleDiscount) : price;
   const minWholesaleQty = 10;
+  const { toast } = useToast();
+
+  const handleAddToCart = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast({
+        title: "Please login",
+        description: "You need to login to add items to cart",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if item already exists in cart
+    const { data: existing } = await supabase
+      .from("cart_items")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("product_id", id.toString())
+      .maybeSingle();
+
+    if (existing) {
+      // Update quantity
+      await supabase
+        .from("cart_items")
+        .update({ quantity: existing.quantity + 1 })
+        .eq("id", existing.id);
+    } else {
+      // Insert new cart item
+      await supabase.from("cart_items").insert({
+        user_id: user.id,
+        product_id: id.toString(),
+        product_name: name,
+        product_price: displayPrice,
+        product_image: image,
+        quantity: 1,
+      });
+    }
+
+    toast({
+      title: "Added to cart",
+      description: `${name} has been added to your cart`,
+    });
+  };
   
   return (
     <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/20">
@@ -46,7 +93,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
         )}
       </CardContent>
       <CardFooter className="p-2 pt-0">
-        <Button className="w-full h-7 text-[10px]" size="sm">
+        <Button className="w-full h-7 text-[10px]" size="sm" onClick={handleAddToCart}>
           <ShoppingCart className="mr-1 h-3 w-3" />
           Add to Cart
         </Button>

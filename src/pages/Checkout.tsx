@@ -4,11 +4,71 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+
+interface CartItem {
+  id: string;
+  product_name: string;
+  product_price: number;
+  quantity: number;
+}
 
 const Checkout = () => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data } = await supabase
+        .from("cart_items")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (data) {
+        setCartItems(data);
+      }
+      setLoading(false);
+    };
+
+    fetchCart();
+  }, [navigate]);
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.product_price * item.quantity, 0);
+  const shipping = 9.99;
+  const total = subtotal + shipping;
+
+  const handlePlaceOrder = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Clear cart after order
+    await supabase.from("cart_items").delete().eq("user_id", user.id);
+    
+    toast({
+      title: "Order placed successfully!",
+      description: "You will receive a confirmation email shortly.",
+    });
+    
+    navigate("/shop");
+  };
+
+  if (loading) return <div className="min-h-screen bg-background"><Header cartItemCount={0} /></div>;
+
   return (
     <div className="min-h-screen bg-background">
-      <Header cartItemCount={3} />
+      <Header cartItemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
       
       <main className="container py-8">
         <h1 className="text-4xl font-bold text-foreground mb-8">Checkout</h1>
@@ -88,36 +148,34 @@ const Checkout = () => {
               <h2 className="text-xl font-bold text-foreground mb-4">Order Summary</h2>
               
               <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Arsenal Home Jersey 23/24 (x1)</span>
-                  <span>$89.99</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Arsenal Cap (x2)</span>
-                  <span>$49.98</span>
-                </div>
+                {cartItems.map((item) => (
+                  <div key={item.id} className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{item.product_name} (x{item.quantity})</span>
+                    <span>${(item.product_price * item.quantity).toFixed(2)}</span>
+                  </div>
+                ))}
                 <div className="border-t border-border pt-3 space-y-2">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>$139.97</span>
+                    <span>${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Shipping</span>
-                    <span>$9.99</span>
+                    <span>${shipping.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold pt-2">
                     <span>Total</span>
-                    <span className="text-primary">$149.96</span>
+                    <span className="text-primary">${total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              <Button className="w-full" size="lg">
+              <Button className="w-full" size="lg" onClick={handlePlaceOrder}>
                 Place Order
               </Button>
               
               <p className="text-xs text-muted-foreground text-center mt-4">
-                By placing your order, you agree to our terms and conditions
+                By placing your order, you agree to our <Link to="/terms" className="underline">terms</Link> and <Link to="/privacy" className="underline">privacy policy</Link>
               </p>
             </Card>
           </div>
