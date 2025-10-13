@@ -24,15 +24,31 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
+      // Guest user - save to localStorage
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      const existingIndex = guestCart.findIndex((item: any) => item.product_id === id.toString());
+      
+      if (existingIndex >= 0) {
+        guestCart[existingIndex].quantity += 1;
+      } else {
+        guestCart.push({
+          product_id: id.toString(),
+          product_name: name,
+          product_price: displayPrice,
+          product_image: image,
+          quantity: 1,
+        });
+      }
+      
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
       toast({
-        title: "Please login",
-        description: "You need to login to add items to cart",
-        variant: "destructive",
+        title: "Added to cart",
+        description: `${name} has been added to your cart`,
       });
       return;
     }
 
-    // Check if item already exists in cart
+    // Logged in user - save to database
     const { data: existing } = await supabase
       .from("cart_items")
       .select("*")
@@ -41,13 +57,11 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
       .maybeSingle();
 
     if (existing) {
-      // Update quantity
       await supabase
         .from("cart_items")
         .update({ quantity: existing.quantity + 1 })
         .eq("id", existing.id);
     } else {
-      // Insert new cart item
       await supabase.from("cart_items").insert({
         user_id: user.id,
         product_id: id.toString(),

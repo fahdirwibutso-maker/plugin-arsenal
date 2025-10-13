@@ -27,7 +27,10 @@ const Cart = () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      navigate("/auth");
+      // Load guest cart from localStorage
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      setCartItems(guestCart.map((item: any, index: number) => ({ ...item, id: `guest-${index}` })));
+      setLoading(false);
       return;
     }
 
@@ -49,6 +52,20 @@ const Cart = () => {
   const updateQuantity = async (id: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      // Update guest cart
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      const index = parseInt(id.replace("guest-", ""));
+      if (guestCart[index]) {
+        guestCart[index].quantity = newQuantity;
+        localStorage.setItem("guestCart", JSON.stringify(guestCart));
+        fetchCartItems();
+      }
+      return;
+    }
+    
     await supabase
       .from("cart_items")
       .update({ quantity: newQuantity })
@@ -58,6 +75,19 @@ const Cart = () => {
   };
 
   const removeItem = async (id: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      // Remove from guest cart
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      const index = parseInt(id.replace("guest-", ""));
+      guestCart.splice(index, 1);
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
+      toast({ title: "Item removed from cart" });
+      fetchCartItems();
+      return;
+    }
+    
     await supabase.from("cart_items").delete().eq("id", id);
     toast({ title: "Item removed from cart" });
     fetchCartItems();

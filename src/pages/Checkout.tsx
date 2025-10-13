@@ -8,6 +8,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const checkoutSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Invalid email"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  postal: z.string().min(1, "Postal code is required"),
+});
 
 interface CartItem {
   id: string;
@@ -19,6 +31,18 @@ interface CartItem {
 const Checkout = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    password: "",
+    address: "",
+    city: "",
+    postal: "",
+    country: "uk",
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -27,7 +51,11 @@ const Checkout = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        navigate("/auth");
+        // Guest user - load from localStorage
+        setIsGuest(true);
+        const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+        setCartItems(guestCart.map((item: any, index: number) => ({ ...item, id: `guest-${index}` })));
+        setLoading(false);
         return;
       }
 
@@ -50,15 +78,73 @@ const Checkout = () => {
   const total = subtotal + shipping;
 
   const handlePlaceOrder = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
+    if (isGuest) {
+      // Validate form
+      try {
+        checkoutSchema.parse(formData);
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          toast({
+            title: "Validation Error",
+            description: error.errors[0].message,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
 
-    // Clear cart after order
-    await supabase.from("cart_items").delete().eq("user_id", user.id);
+      // Register user with their info
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: `${formData.phone}@freshmart.local`,
+        password: formData.password,
+        options: {
+          data: {
+            username: `${formData.firstName} ${formData.lastName}`,
+            phone_number: formData.phone,
+          },
+        },
+      });
+
+      if (authError) {
+        toast({
+          title: "Registration failed",
+          description: authError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (authData.user) {
+        // Migrate guest cart to database
+        const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+        for (const item of guestCart) {
+          await supabase.from("cart_items").insert({
+            user_id: authData.user.id,
+            product_id: item.product_id,
+            product_name: item.product_name,
+            product_price: item.product_price,
+            product_image: item.product_image,
+            quantity: item.quantity,
+          });
+        }
+        
+        // Clear guest cart
+        localStorage.removeItem("guestCart");
+        
+        // Clear cart after order
+        await supabase.from("cart_items").delete().eq("user_id", authData.user.id);
+      }
+    } else {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      // Clear cart after order
+      await supabase.from("cart_items").delete().eq("user_id", user.id);
+    }
     
     toast({
       title: "Order placed successfully!",
-      description: "You will receive a confirmation email shortly.",
+      description: "Your account has been created and order confirmed.",
     });
     
     navigate("/shop");
@@ -76,39 +162,96 @@ const Checkout = () => {
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <Card className="p-6">
-              <h2 className="text-xl font-semibold text-foreground mb-4">Shipping Information</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-4">
+                {isGuest ? "Create Account & Shipping Info" : "Shipping Information"}
+              </h2>
               <div className="grid gap-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" placeholder="John" />
+                    <Input 
+                      id="firstName" 
+                      placeholder="John" 
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" placeholder="Doe" />
+                    <Input 
+                      id="lastName" 
+                      placeholder="Doe"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                    />
                   </div>
                 </div>
+                {isGuest && (
+                  <>
+                    <div>
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input 
+                        id="phone" 
+                        type="tel" 
+                        placeholder="1234567890"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="password">Create Password</Label>
+                      <Input 
+                        id="password" 
+                        type="password" 
+                        placeholder="Min 6 characters"
+                        value={formData.password}
+                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      />
+                    </div>
+                  </>
+                )}
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="john@example.com" />
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    placeholder="john@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  />
                 </div>
                 <div>
                   <Label htmlFor="address">Address</Label>
-                  <Input id="address" placeholder="123 Main St" />
+                  <Input 
+                    id="address" 
+                    placeholder="123 Main St"
+                    value={formData.address}
+                    onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="city">City</Label>
-                    <Input id="city" placeholder="London" />
+                    <Input 
+                      id="city" 
+                      placeholder="London"
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    />
                   </div>
                   <div>
                     <Label htmlFor="postal">Postal Code</Label>
-                    <Input id="postal" placeholder="SW1A 1AA" />
+                    <Input 
+                      id="postal" 
+                      placeholder="SW1A 1AA"
+                      value={formData.postal}
+                      onChange={(e) => setFormData({...formData, postal: e.target.value})}
+                    />
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="country">Country</Label>
-                  <Select>
+                  <Select value={formData.country} onValueChange={(value) => setFormData({...formData, country: value})}>
                     <SelectTrigger id="country">
                       <SelectValue placeholder="Select country" />
                     </SelectTrigger>
