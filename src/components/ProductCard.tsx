@@ -97,9 +97,9 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
           </h3>
         </Link>
         <div className="flex items-baseline gap-1 mt-0.5">
-          <p className="text-sm font-bold text-primary">${displayPrice.toFixed(2)}</p>
+          <p className="text-sm font-bold text-primary">{displayPrice.toFixed(0)} FRw</p>
           {isWholesale && (
-            <p className="text-[9px] text-muted-foreground line-through">${price.toFixed(2)}</p>
+            <p className="text-[9px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
           )}
         </div>
         {isWholesale && (

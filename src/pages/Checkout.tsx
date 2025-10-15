@@ -294,21 +294,21 @@ const Checkout = () => {
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{item.product_name} (x{item.quantity})</span>
-                    <span>${(item.product_price * item.quantity).toFixed(2)}</span>
+                    <span>{(item.product_price * item.quantity).toFixed(0)} FRw</span>
                   </div>
                 ))}
                 <div className="border-t border-border pt-3 space-y-2">
                   <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>{subtotal.toFixed(0)} FRw</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Shipping</span>
-                    <span>${shipping.toFixed(2)}</span>
+                    <span>{shipping.toFixed(0)} FRw</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold pt-2">
                     <span>Total</span>
-                    <span className="text-primary">${total.toFixed(2)}</span>
+                    <span className="text-primary">{total.toFixed(0)} FRw</span>
                   </div>
                 </div>
               </div>
