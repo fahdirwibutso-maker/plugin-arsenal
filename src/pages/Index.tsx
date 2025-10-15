@@ -44,7 +44,7 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-[100px]">
+      <section className="relative overflow-hidden h-[160px]">
         {/* Background Slideshow */}
         <div className="absolute inset-0">
           {slides.map((slide, index) => (
@@ -92,34 +92,34 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="py-12 border-y border-border">
+      <section className="h-[50px] border-y border-border flex items-center">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-primary/10">
-                <Truck className="h-6 w-6 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Truck className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Fast Delivery</h3>
-                <p className="text-sm text-muted-foreground">Same-day delivery available</p>
+                <h3 className="font-semibold text-foreground text-xs">Fast Delivery</h3>
+                <p className="text-[10px] text-muted-foreground">Same-day delivery available</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-primary/10">
-                <Shield className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <Shield className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Secure Payment</h3>
-                <p className="text-sm text-muted-foreground">100% secure transactions</p>
+                <h3 className="font-semibold text-foreground text-xs">Secure Payment</h3>
+                <p className="text-[10px] text-muted-foreground">100% secure transactions</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-primary/10">
-                <CreditCard className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-primary/10">
+                <CreditCard className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">Fresh Guarantee</h3>
-                <p className="text-sm text-muted-foreground">Quality freshness assured</p>
+                <h3 className="font-semibold text-foreground text-xs">Fresh Guarantee</h3>
+                <p className="text-[10px] text-muted-foreground">Quality freshness assured</p>
               </div>
             </div>
           </div>
