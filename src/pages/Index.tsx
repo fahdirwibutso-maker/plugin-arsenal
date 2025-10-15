@@ -44,7 +44,7 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-[15vh] min-h-[400px]">
+      <section className="relative overflow-hidden h-[100px]">
         {/* Background Slideshow */}
         <div className="absolute inset-0">
           {slides.map((slide, index) => (
@@ -66,24 +66,24 @@ const Index = () => {
         {/* Content */}
         <div className="container relative h-full flex items-center">
           <div className="max-w-3xl">
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-xl font-bold mb-2 leading-tight">
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
                 Fresh Quality
               </span>
-              <span className="block text-foreground mt-2">Every Day</span>
+              <span className="block text-foreground">Every Day</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
+            <p className="text-xs text-muted-foreground mb-3">
               Your trusted supermarket for wholesale and retail. Fresh produce, quality groceries, 
               and beverages at the best prices.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-2">
               <Link to="/shop">
-                <Button size="lg" className="text-base">
+                <Button size="sm" className="text-[10px] h-7 px-3">
                   Shop Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="text-base">
+              <Button size="sm" variant="outline" className="text-[10px] h-7 px-3">
                 Wholesale Pricing
               </Button>
             </div>
