@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
+import supermarket1 from "@/assets/supermarket-1.jpg";
+import supermarket2 from "@/assets/supermarket-2.jpg";
+import supermarket3 from "@/assets/supermarket-3.jpg";
 
 // Featured products
 const featuredProducts = [
@@ -20,6 +23,15 @@ const featuredProducts = [
 const Index = () => {
   const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slides = [supermarket1, supermarket2, supermarket3];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000); // Change slide every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
   
   return (
     <div className="min-h-screen bg-background">
@@ -32,12 +44,33 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-background py-20 lg:py-32">
-        <div className="container">
+      <section className="relative overflow-hidden h-[calc(100vh-40px)] min-h-[500px] max-h-[700px]">
+        {/* Background Slideshow */}
+        <div className="absolute inset-0">
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className="absolute inset-0 transition-opacity duration-2000 ease-in-out"
+              style={{
+                opacity: currentSlide === index ? 1 : 0,
+                backgroundImage: `url(${slide})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            />
+          ))}
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/50" />
+        </div>
+
+        {/* Content */}
+        <div className="container relative h-full flex items-center">
           <div className="max-w-3xl">
-            <h1 className="text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-              Fresh Quality
-              <span className="text-primary block">Every Day</span>
+            <h1 className="text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
+                Fresh Quality
+              </span>
+              <span className="block text-foreground mt-2">Every Day</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
               Your trusted supermarket for wholesale and retail. Fresh produce, quality groceries, 
