@@ -44,7 +44,7 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-[calc(100vh-40px)] min-h-[500px] max-h-[700px]">
+      <section className="relative overflow-hidden h-[15vh] min-h-[400px]">
         {/* Background Slideshow */}
         <div className="absolute inset-0">
           {slides.map((slide, index) => (
