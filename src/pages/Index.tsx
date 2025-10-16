@@ -163,9 +163,11 @@ const Index = () => {
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
             Get exclusive deals, wholesale pricing access, and earn points on every purchase
           </p>
-          <Button size="lg" variant="secondary" className="text-base">
-            Sign Up Now
-          </Button>
+          <Link to="/auth">
+            <Button size="lg" variant="secondary" className="text-base">
+              Sign Up Now
+            </Button>
+          </Link>
         </div>
       </section>
     </div>
