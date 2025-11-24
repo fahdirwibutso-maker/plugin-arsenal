@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Header from "@/components/Header";
+import { AdminLayout } from "@/components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -70,8 +70,7 @@ const Orders = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <AdminLayout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Order Management</h1>
 
@@ -104,7 +103,7 @@ const Orders = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 

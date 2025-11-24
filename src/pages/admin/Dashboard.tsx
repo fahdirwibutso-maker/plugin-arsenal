@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Package, ShoppingCart, DollarSign } from "lucide-react";
-import Header from "@/components/Header";
+import { AdminLayout } from "@/components/AdminLayout";
 
 const Dashboard = () => {
   const stats = [
@@ -11,8 +11,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <AdminLayout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
         
@@ -72,7 +71,7 @@ const Dashboard = () => {
           </Card>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 
