@@ -79,40 +79,55 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
   };
   
   return (
-    <Card className="group overflow-hidden transition-all hover:shadow-lg hover:shadow-primary/20">
+    <div className="futuristic-card group transition-all duration-300 hover:scale-[1.02]">
+      {/* Shimmer effect on hover */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent animate-shimmer" />
+      </div>
+      
       <Link to={`/product/${id}`}>
-        <div className="aspect-square overflow-hidden bg-secondary">
+        <div className="aspect-square overflow-hidden bg-secondary/50 relative">
           <img 
             src={image} 
             alt={name}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
       </Link>
-      <CardContent className="p-2">
-        <p className="text-[9px] text-muted-foreground uppercase tracking-wider mb-0">{category}</p>
+      
+      <CardContent className="p-3 relative">
+        <p className="text-[9px] text-primary/70 uppercase tracking-widest mb-1 font-medium">{category}</p>
         <Link to={`/product/${id}`}>
-          <h3 className="font-semibold text-xs text-foreground group-hover:text-primary transition-colors line-clamp-1">
+          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
             {name}
           </h3>
         </Link>
-        <div className="flex items-baseline gap-1 mt-0.5">
-          <p className="text-sm font-bold text-primary">{displayPrice.toFixed(0)} FRw</p>
+        <div className="flex items-baseline gap-2 mt-1">
+          <p className="text-lg font-bold text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
+            {displayPrice.toFixed(0)} <span className="text-xs font-normal">FRw</span>
+          </p>
           {isWholesale && (
-            <p className="text-[9px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
+            <p className="text-[10px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
           )}
         </div>
         {isWholesale && (
-          <p className="text-[8px] text-primary/70 mt-0.5">Min: {minWholesaleQty} units</p>
+          <p className="text-[9px] text-primary/60 mt-1 font-medium">Min: {minWholesaleQty} units</p>
         )}
       </CardContent>
-      <CardFooter className="p-2 pt-0">
-        <Button className="w-full h-7 text-[10px]" size="sm" onClick={handleAddToCart}>
-          <ShoppingCart className="mr-1 h-3 w-3" />
+      
+      <CardFooter className="p-3 pt-0">
+        <Button 
+          className="w-full h-8 text-[11px] font-medium bg-primary/90 hover:bg-primary border-0 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300" 
+          size="sm" 
+          onClick={handleAddToCart}
+        >
+          <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
           Add to Cart
         </Button>
       </CardFooter>
-    </Card>
+    </div>
   );
 };
 

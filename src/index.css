@@ -36,7 +36,14 @@ All colors MUST be HSL.
     --input: 217 33% 20%;
     --ring: 142 76% 36%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Futuristic design tokens */
+    --glow-primary: 142 76% 36%;
+    --card-glow: 0 0 40px hsl(var(--primary) / 0.15);
+    --card-hover-glow: 0 0 60px hsl(var(--primary) / 0.25);
+    --gradient-card: linear-gradient(145deg, hsl(222 47% 16%), hsl(222 47% 12%));
+    --border-glow: 1px solid hsl(var(--primary) / 0.2);
   }
 }
 
@@ -60,7 +67,55 @@ All colors MUST be HSL.
     }
   }
 
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.2);
+    }
+    50% {
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.4);
+    }
+  }
+
   .animate-gradient {
     animation: gradient 8s ease infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  .futuristic-card {
+    @apply relative overflow-hidden rounded-xl;
+    background: linear-gradient(145deg, hsl(222 47% 16%), hsl(222 47% 12%));
+    border: 1px solid hsl(142 76% 36% / 0.15);
+    box-shadow: 0 0 30px hsl(142 76% 36% / 0.1);
+  }
+
+  .futuristic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(142 76% 36% / 0.5), transparent);
+  }
+
+  .futuristic-card:hover {
+    border-color: hsl(142 76% 36% / 0.3);
+    box-shadow: 0 0 50px hsl(142 76% 36% / 0.2);
   }
 }
