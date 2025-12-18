@@ -17,6 +17,7 @@ import AdminProducts from "./pages/admin/Products";
 import AdminUsers from "./pages/admin/Users";
 import AdminOrders from "./pages/admin/Orders";
 import InstallPrompt from "./components/InstallPrompt";
+import SplashScreen from "./components/SplashScreen";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <SplashScreen />
       <Toaster />
       <Sonner />
       <BrowserRouter>
