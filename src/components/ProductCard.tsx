@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { CardContent, CardFooter } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
+import LazyImage from "@/components/LazyImage";
 interface ProductCardProps {
   id: number;
   name: string;
@@ -87,10 +87,10 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
       
       <Link to={`/product/${id}`}>
         <div className="aspect-square overflow-hidden bg-secondary/50 relative">
-          <img 
+          <LazyImage 
             src={image} 
             alt={name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="h-full w-full transition-transform duration-500 group-hover:scale-110"
           />
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

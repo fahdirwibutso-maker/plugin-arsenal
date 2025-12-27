@@ -7,29 +7,19 @@ import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
 import supermarket1 from "@/assets/supermarket-1.jpg";
 import supermarket2 from "@/assets/supermarket-2.jpg";
 import supermarket3 from "@/assets/supermarket-3.jpg";
-
-// Featured products with real images
-const featuredProducts = [
-  { id: 1, name: "Organic Apples", price: 4.99, image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&h=400&fit=crop", category: "Fresh Fruits" },
-  { id: 13, name: "Fresh Milk 2L", price: 3.49, image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=400&fit=crop", category: "Dairy" },
-  { id: 24, name: "Whole Wheat Bread", price: 2.99, image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=400&fit=crop", category: "Bakery" },
-  { id: 29, name: "Orange Juice 2L", price: 5.99, image: "https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=400&fit=crop", category: "Beverages" },
-  { id: 19, name: "Fresh Chicken", price: 12.99, image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=400&h=400&fit=crop", category: "Meat" },
-  { id: 4, name: "Strawberries", price: 6.99, image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400&h=400&fit=crop", category: "Fresh Fruits" },
-  { id: 14, name: "Cheddar Cheese", price: 6.99, image: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=400&h=400&fit=crop", category: "Dairy" },
-  { id: 30, name: "Coca Cola 2L", price: 3.99, image: "https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=400&h=400&fit=crop", category: "Beverages" },
-];
+import { getFeaturedProducts } from "@/data/products";
 
 const Index = () => {
   const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [supermarket1, supermarket2, supermarket3];
+  const featuredProducts = getFeaturedProducts();
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
   
