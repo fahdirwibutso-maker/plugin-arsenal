@@ -1,7 +1,7 @@
-import { ShoppingCart, Search, Menu, X, User, Package } from "lucide-react";
+import { ShoppingCart, Menu, User, Package } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import SearchAutocomplete from "@/components/SearchAutocomplete";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
@@ -126,16 +126,11 @@ const Header = ({
           
           {/* Search Bar - Desktop */}
           <div className="hidden md:flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                type="search" 
-                placeholder="Search products..." 
-                className="w-64 pl-9"
-                value={searchQuery}
-                onChange={(e) => onSearchChange?.(e.target.value)}
-              />
-            </div>
+            <SearchAutocomplete
+              searchQuery={searchQuery}
+              onSearchChange={(q) => onSearchChange?.(q)}
+              className="w-64"
+            />
           </div>
           
           {/* User Account */}
@@ -189,12 +184,10 @@ const Header = ({
                   </Link>
                 ))}
                 <div className="pt-4 border-t border-border">
-                  <Input 
-                    type="search" 
-                    placeholder="Search products..." 
+                  <SearchAutocomplete
+                    searchQuery={searchQuery}
+                    onSearchChange={(q) => onSearchChange?.(q)}
                     className="w-full"
-                    value={searchQuery}
-                    onChange={(e) => onSearchChange?.(e.target.value)}
                   />
                 </div>
                 <div className="pt-4 border-t border-border">
