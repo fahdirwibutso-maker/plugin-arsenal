@@ -3,7 +3,14 @@ import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { products, categories } from "@/data/products";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const categories = [
+  "All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery",
+  "Beverages", "Pantry", "Snacks", "Frozen", "Household", "Personal Care",
+];
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -11,19 +18,30 @@ const Shop = () => {
   const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const filteredProducts = useMemo(() => {
-    let filtered = selectedCategory === "All" 
+    let filtered = selectedCategory === "All"
       ? products
       : products.filter(p => p.category === selectedCategory);
-    
+
     if (searchQuery.trim()) {
-      filtered = filtered.filter(p => 
+      filtered = filtered.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-    
-    // Apply sorting
+
     if (sortBy === "price-low") {
       filtered = [...filtered].sort((a, b) => a.price - b.price);
     } else if (sortBy === "price-high") {
@@ -31,20 +49,20 @@ const Shop = () => {
     } else if (sortBy === "newest") {
       filtered = [...filtered].reverse();
     }
-    
+
     return filtered;
-  }, [selectedCategory, searchQuery, sortBy]);
+  }, [selectedCategory, searchQuery, sortBy, products]);
 
   return (
     <div className="min-h-screen bg-background">
-      <Header 
-        cartItemCount={0} 
+      <Header
+        cartItemCount={0}
         isWholesale={isWholesale}
         onWholesaleToggle={setIsWholesale}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
-      
+
       <main className="container py-8">
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -73,7 +91,7 @@ const Shop = () => {
               </Button>
             ))}
           </div>
-          
+
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Sort by" />
@@ -87,15 +105,27 @@ const Shop = () => {
           </Select>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-          {filteredProducts.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              {...product} 
-              isWholesale={isWholesale}
-            />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+            {Array.from({ length: 16 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-square rounded-lg" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                image={product.image}
+                category={product.category}
+                isWholesale={isWholesale}
+              />
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
