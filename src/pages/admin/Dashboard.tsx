@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Package, ShoppingCart, DollarSign } from "lucide-react";
+import { Users, Package, ShoppingCart, Banknote } from "lucide-react";
 import { AdminLayout } from "@/components/AdminLayout";
 
 const Dashboard = () => {
@@ -7,14 +7,14 @@ const Dashboard = () => {
     { title: "Total Users", value: "1,234", icon: Users, color: "text-blue-600" },
     { title: "Products", value: "567", icon: Package, color: "text-green-600" },
     { title: "Orders", value: "890", icon: ShoppingCart, color: "text-purple-600" },
-    { title: "Revenue", value: "$45,678", icon: DollarSign, color: "text-yellow-600" },
+    { title: "Revenue", value: "45,678 FRw", icon: Banknote, color: "text-yellow-600" },
   ];
 
   return (
     <AdminLayout>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat) => (
             <Card key={stat.title}>
@@ -44,7 +44,7 @@ const Dashboard = () => {
                       <p className="font-medium">Order #{1000 + i}</p>
                       <p className="text-sm text-muted-foreground">Customer {i}</p>
                     </div>
-                    <span className="text-green-600 font-semibold">${(i * 50).toFixed(2)}</span>
+                    <span className="text-green-600 font-semibold">{(i * 50).toFixed(0)} FRw</span>
                   </div>
                 ))}
               </div>

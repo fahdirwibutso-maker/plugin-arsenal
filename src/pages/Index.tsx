@@ -7,14 +7,27 @@ import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
 import supermarket1 from "@/assets/supermarket-1.jpg";
 import supermarket2 from "@/assets/supermarket-2.jpg";
 import supermarket3 from "@/assets/supermarket-3.jpg";
-import { getFeaturedProducts } from "@/data/products";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
   const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [supermarket1, supermarket2, supermarket3];
-  const featuredProducts = getFeaturedProducts();
+
+  const { data: featuredProducts = [] } = useQuery({
+    queryKey: ["featured-products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true)
+        .limit(8);
+      if (error) throw error;
+      return data;
+    },
+  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -136,7 +149,11 @@ const Index = () => {
             {featuredProducts.map((product) => (
               <ProductCard 
                 key={product.id} 
-                {...product} 
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                image={product.image}
+                category={product.category}
                 isWholesale={isWholesale}
               />
             ))}

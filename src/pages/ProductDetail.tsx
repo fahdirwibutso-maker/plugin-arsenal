@@ -2,33 +2,110 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Share2, ArrowLeft } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-// Mock product data
-const productData = {
-  id: 1,
-  name: "Arsenal Home Jersey 23/24",
-  price: 89.99,
-  description: "Show your support with the official Arsenal home jersey for the 23/24 season. Featuring the iconic red and white colors with modern performance fabric technology.",
-  images: ["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"],
-  category: "Jerseys",
-  sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-  inStock: true,
-  features: [
-    "Official licensed product",
-    "Breathable performance fabric",
-    "Regular fit",
-    "100% Polyester"
-  ]
-};
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { toast } = useToast();
+
+  const { data: product, isLoading } = useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      const existingIndex = guestCart.findIndex((item: any) => item.product_id === product.id);
+      if (existingIndex >= 0) {
+        guestCart[existingIndex].quantity += 1;
+      } else {
+        guestCart.push({
+          product_id: product.id,
+          product_name: product.name,
+          product_price: product.price,
+          product_image: product.image,
+          quantity: 1,
+        });
+      }
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
+      toast({ title: "Added to cart", description: `${product.name} has been added to your cart` });
+      return;
+    }
+
+    const { data: existing } = await supabase
+      .from("cart_items")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("product_id", product.id)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase.from("cart_items").update({ quantity: existing.quantity + 1 }).eq("id", existing.id);
+    } else {
+      await supabase.from("cart_items").insert({
+        user_id: user.id,
+        product_id: product.id,
+        product_name: product.name,
+        product_price: product.price,
+        product_image: product.image,
+        quantity: 1,
+      });
+    }
+    toast({ title: "Added to cart", description: `${product.name} has been added to your cart` });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header cartItemCount={0} />
+        <main className="container py-8">
+          <Skeleton className="h-8 w-32 mb-8" />
+          <div className="grid md:grid-cols-2 gap-12">
+            <Skeleton className="aspect-square rounded-lg" />
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-8 w-32" />
+              <Skeleton className="h-20 w-full" />
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header cartItemCount={0} />
+        <main className="container py-8 text-center">
+          <h1 className="text-2xl font-bold">Product not found</h1>
+          <Link to="/shop" className="text-primary underline mt-4 inline-block">Back to Shop</Link>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Header cartItemCount={0} />
-      
+
       <main className="container py-8">
         <Link to="/shop" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8">
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -38,49 +115,35 @@ const ProductDetail = () => {
         <div className="grid md:grid-cols-2 gap-12">
           <div className="space-y-4">
             <div className="aspect-square bg-secondary rounded-lg overflow-hidden">
-              <img 
-                src={productData.images[0]} 
-                alt={productData.name}
+              <img
+                src={product.image}
+                alt={product.name}
                 className="w-full h-full object-cover"
               />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              {productData.images.slice(1).map((img, idx) => (
-                <div key={idx} className="aspect-square bg-secondary rounded-lg overflow-hidden cursor-pointer hover:opacity-80">
-                  <img src={img} alt={`${productData.name} ${idx + 2}`} className="w-full h-full object-cover" />
-                </div>
-              ))}
             </div>
           </div>
 
           <div className="space-y-6">
             <div>
               <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">
-                {productData.category}
+                {product.category}
               </p>
-              <h1 className="text-4xl font-bold text-foreground mb-4">{productData.name}</h1>
-              <p className="text-3xl font-bold text-primary">${productData.price}</p>
+              <h1 className="text-4xl font-bold text-foreground mb-4">{product.name}</h1>
+              <p className="text-3xl font-bold text-primary">{product.price.toFixed(0)} FRw</p>
+              {product.wholesale_price && (
+                <p className="text-lg text-muted-foreground mt-1">Wholesale: {product.wholesale_price.toFixed(0)} FRw</p>
+              )}
             </div>
 
-            <p className="text-muted-foreground leading-relaxed">{productData.description}</p>
+            {product.description && (
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+            )}
 
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">Size</label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select size" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {productData.sizes.map((size) => (
-                      <SelectItem key={size} value={size}>{size}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <p className="text-sm text-muted-foreground">Stock: {product.stock} available</p>
 
               <div className="flex gap-4">
-                <Button className="flex-1" size="lg">
+                <Button className="flex-1" size="lg" onClick={handleAddToCart}>
                   <ShoppingCart className="mr-2 h-5 w-5" />
                   Add to Cart
                 </Button>
@@ -91,18 +154,6 @@ const ProductDetail = () => {
                   <Share2 className="h-5 w-5" />
                 </Button>
               </div>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <h3 className="font-semibold text-foreground mb-3">Features</h3>
-              <ul className="space-y-2">
-                {productData.features.map((feature, idx) => (
-                  <li key={idx} className="text-muted-foreground flex items-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary mr-3" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
         </div>

@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { products } from "@/data/products";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import LazyImage from "@/components/LazyImage";
 
@@ -16,20 +17,32 @@ const SearchAutocomplete = ({ searchQuery, onSearchChange, className }: SearchAu
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
+  const { data: products = [] } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("is_active", true);
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const suggestions = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
     return products
       .filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q))
       .slice(0, 8);
-  }, [searchQuery]);
+  }, [searchQuery, products]);
 
   const categoryMatches = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
     const cats = [...new Set(products.map(p => p.category))];
     return cats.filter(c => c.toLowerCase().includes(q)).slice(0, 3);
-  }, [searchQuery]);
+  }, [searchQuery, products]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -41,7 +54,7 @@ const SearchAutocomplete = ({ searchQuery, onSearchChange, className }: SearchAu
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelect = (productId: number) => {
+  const handleSelect = (productId: string) => {
     setIsOpen(false);
     navigate(`/product/${productId}`);
   };
@@ -92,7 +105,7 @@ const SearchAutocomplete = ({ searchQuery, onSearchChange, className }: SearchAu
               ))}
             </div>
           )}
-          
+
           {suggestions.length > 0 && (
             <div className="p-2">
               <p className="text-xs font-medium text-muted-foreground px-2 pb-1">Products</p>
@@ -109,7 +122,7 @@ const SearchAutocomplete = ({ searchQuery, onSearchChange, className }: SearchAu
                     <p className="font-medium truncate">{product.name}</p>
                     <p className="text-xs text-muted-foreground">{product.category}</p>
                   </div>
-                  <span className="text-xs font-semibold text-primary">${product.price.toFixed(2)}</span>
+                  <span className="text-xs font-semibold text-primary">{product.price.toFixed(0)} FRw</span>
                 </button>
               ))}
             </div>

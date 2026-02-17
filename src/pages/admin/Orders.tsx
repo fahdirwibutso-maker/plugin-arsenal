@@ -43,7 +43,7 @@ const Orders = () => {
             <TableCell className="font-medium">#{order.id}</TableCell>
             <TableCell>{order.customer}</TableCell>
             <TableCell>{order.items}</TableCell>
-            <TableCell>${order.total.toFixed(2)}</TableCell>
+            <TableCell>{order.total.toFixed(0)} FRw</TableCell>
             <TableCell>
               <Badge
                 variant={
@@ -79,7 +79,7 @@ const Orders = () => {
             <TabsTrigger value="retail">Retail Orders</TabsTrigger>
             <TabsTrigger value="wholesale">Wholesale Orders</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="retail">
             <Card>
               <CardHeader>
