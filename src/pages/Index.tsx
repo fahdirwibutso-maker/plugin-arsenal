@@ -47,7 +47,7 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-[160px]">
+      <section className="relative overflow-hidden h-[200px] sm:h-[220px] md:h-[260px]">
         {/* Background Slideshow */}
         <div className="absolute inset-0">
           {slides.map((slide, index) => (
@@ -67,26 +67,26 @@ const Index = () => {
         </div>
 
         {/* Content */}
-        <div className="container relative h-full flex items-center">
+        <div className="container relative h-full flex items-center px-4 sm:px-6">
           <div className="max-w-3xl">
-            <h1 className="text-xl font-bold mb-2 leading-tight">
+            <h1 className="text-lg sm:text-xl md:text-3xl font-bold mb-2 leading-tight">
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
                 Fresh Quality
               </span>
               <span className="block text-foreground">Every Day</span>
             </h1>
-            <p className="text-xs text-muted-foreground mb-3">
+            <p className="text-[11px] sm:text-xs md:text-sm text-muted-foreground mb-3 max-w-md">
               Your trusted supermarket for wholesale and retail. Fresh produce, quality groceries, 
               and beverages at the best prices.
             </p>
             <div className="flex flex-wrap gap-2">
               <Link to="/shop">
-                <Button size="sm" className="text-[10px] h-7 px-3">
+                <Button size="sm" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4">
                   Shop Now
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
               </Link>
-              <Button size="sm" variant="outline" className="text-[10px] h-7 px-3">
+              <Button size="sm" variant="outline" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4">
                 Wholesale Pricing
               </Button>
             </div>
@@ -95,9 +95,9 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="h-[50px] border-y border-border flex items-center">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+      <section className="py-3 sm:py-4 border-y border-border">
+        <div className="container px-4 sm:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-primary/10">
                 <Truck className="h-4 w-4 text-primary" />
@@ -130,22 +130,22 @@ const Index = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16">
-        <div className="container">
-          <div className="flex items-center justify-between mb-8">
+      <section className="py-8 sm:py-12 md:py-16">
+        <div className="container px-4 sm:px-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-2">Featured Products</h2>
-              <p className="text-muted-foreground">Check out our most popular items</p>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1 sm:mb-2">Featured Products</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">Check out our most popular items</p>
             </div>
             <Link to="/shop">
-              <Button variant="outline">
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm">
                 View All
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </Link>
           </div>
           
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             {featuredProducts.map((product) => (
               <ProductCard 
                 key={product.id} 
@@ -162,16 +162,16 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary to-accent">
-        <div className="container text-center">
-          <h2 className="text-4xl font-bold text-primary-foreground mb-4">
+      <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-br from-primary to-accent">
+        <div className="container px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-foreground mb-3 sm:mb-4">
             Join FreshMart Rewards
           </h2>
-          <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-xl text-primary-foreground/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
             Get exclusive deals, wholesale pricing access, and earn points on every purchase
           </p>
           <Link to="/auth">
-            <Button size="lg" variant="secondary" className="text-base">
+            <Button size="lg" variant="secondary" className="text-sm sm:text-base">
               Sign Up Now
             </Button>
           </Link>

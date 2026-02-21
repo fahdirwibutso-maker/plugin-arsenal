@@ -103,8 +103,8 @@ const Cart = () => {
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
       
-      <main className="container py-8">
-        <h1 className="text-4xl font-bold text-foreground mb-8">Shopping Cart</h1>
+      <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8">Shopping Cart</h1>
 
         {cartItems.length === 0 ? (
           <div className="text-center py-12">

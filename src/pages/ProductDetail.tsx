@@ -106,13 +106,13 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <Header cartItemCount={0} />
 
-      <main className="container py-8">
-        <Link to="/shop" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8">
+      <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
+        <Link to="/shop" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 sm:mb-8">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Shop
         </Link>
 
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
           <div className="space-y-4">
             <div className="aspect-square bg-secondary rounded-lg overflow-hidden">
               <img
@@ -123,35 +123,35 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div>
-              <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">
+              <p className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider mb-1 sm:mb-2">
                 {product.category}
               </p>
-              <h1 className="text-4xl font-bold text-foreground mb-4">{product.name}</h1>
-              <p className="text-3xl font-bold text-primary">{product.price.toFixed(0)} FRw</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-4">{product.name}</h1>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{product.price.toFixed(0)} FRw</p>
               {product.wholesale_price && (
-                <p className="text-lg text-muted-foreground mt-1">Wholesale: {product.wholesale_price.toFixed(0)} FRw</p>
+                <p className="text-base sm:text-lg text-muted-foreground mt-1">Wholesale: {product.wholesale_price.toFixed(0)} FRw</p>
               )}
             </div>
 
             {product.description && (
-              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{product.description}</p>
             )}
 
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">Stock: {product.stock} available</p>
+            <div className="space-y-3 sm:space-y-4">
+              <p className="text-xs sm:text-sm text-muted-foreground">Stock: {product.stock} available</p>
 
-              <div className="flex gap-4">
+              <div className="flex gap-2 sm:gap-4">
                 <Button className="flex-1" size="lg" onClick={handleAddToCart}>
-                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  <ShoppingCart className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Add to Cart
                 </Button>
                 <Button variant="outline" size="lg">
-                  <Heart className="h-5 w-5" />
+                  <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
                 <Button variant="outline" size="lg">
-                  <Share2 className="h-5 w-5" />
+                  <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
             </div>
