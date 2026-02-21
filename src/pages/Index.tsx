@@ -130,22 +130,22 @@ const Index = () => {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16">
-        <div className="container">
-          <div className="flex items-center justify-between mb-8">
+      <section className="py-8 sm:py-12 md:py-16">
+        <div className="container px-4 sm:px-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-2">Featured Products</h2>
-              <p className="text-muted-foreground">Check out our most popular items</p>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-1 sm:mb-2">Featured Products</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground">Check out our most popular items</p>
             </div>
             <Link to="/shop">
-              <Button variant="outline">
+              <Button variant="outline" size="sm" className="text-xs sm:text-sm">
                 View All
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             </Link>
           </div>
           
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             {featuredProducts.map((product) => (
               <ProductCard 
                 key={product.id} 
