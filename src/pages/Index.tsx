@@ -47,7 +47,7 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden h-[160px]">
+      <section className="relative overflow-hidden h-[200px] sm:h-[220px] md:h-[260px]">
         {/* Background Slideshow */}
         <div className="absolute inset-0">
           {slides.map((slide, index) => (
@@ -67,26 +67,26 @@ const Index = () => {
         </div>
 
         {/* Content */}
-        <div className="container relative h-full flex items-center">
+        <div className="container relative h-full flex items-center px-4 sm:px-6">
           <div className="max-w-3xl">
-            <h1 className="text-xl font-bold mb-2 leading-tight">
+            <h1 className="text-lg sm:text-xl md:text-3xl font-bold mb-2 leading-tight">
               <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
                 Fresh Quality
               </span>
               <span className="block text-foreground">Every Day</span>
             </h1>
-            <p className="text-xs text-muted-foreground mb-3">
+            <p className="text-[11px] sm:text-xs md:text-sm text-muted-foreground mb-3 max-w-md">
               Your trusted supermarket for wholesale and retail. Fresh produce, quality groceries, 
               and beverages at the best prices.
             </p>
             <div className="flex flex-wrap gap-2">
               <Link to="/shop">
-                <Button size="sm" className="text-[10px] h-7 px-3">
+                <Button size="sm" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4">
                   Shop Now
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
               </Link>
-              <Button size="sm" variant="outline" className="text-[10px] h-7 px-3">
+              <Button size="sm" variant="outline" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4">
                 Wholesale Pricing
               </Button>
             </div>
