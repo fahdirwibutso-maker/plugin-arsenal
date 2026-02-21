@@ -108,13 +108,13 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
         )}
       </CardContent>
 
-      <CardFooter className="p-3 pt-0">
+      <CardFooter className="p-2 sm:p-3 pt-0">
         <Button
-          className="w-full h-8 text-[11px] font-medium bg-primary/90 hover:bg-primary border-0 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300"
+          className="w-full h-7 sm:h-8 text-[10px] sm:text-[11px] font-medium bg-primary/90 hover:bg-primary border-0 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all duration-300"
           size="sm"
           onClick={handleAddToCart}
         >
-          <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
+          <ShoppingCart className="mr-1 sm:mr-1.5 h-3 w-3 sm:h-3.5 sm:w-3.5" />
           Add to Cart
         </Button>
       </CardFooter>

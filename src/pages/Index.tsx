@@ -162,16 +162,16 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary to-accent">
-        <div className="container text-center">
-          <h2 className="text-4xl font-bold text-primary-foreground mb-4">
+      <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-br from-primary to-accent">
+        <div className="container px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-foreground mb-3 sm:mb-4">
             Join FreshMart Rewards
           </h2>
-          <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base md:text-xl text-primary-foreground/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
             Get exclusive deals, wholesale pricing access, and earn points on every purchase
           </p>
           <Link to="/auth">
-            <Button size="lg" variant="secondary" className="text-base">
+            <Button size="lg" variant="secondary" className="text-sm sm:text-base">
               Sign Up Now
             </Button>
           </Link>

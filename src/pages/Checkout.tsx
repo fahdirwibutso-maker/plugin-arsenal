@@ -156,8 +156,8 @@ const Checkout = () => {
     <div className="min-h-screen bg-background">
       <Header cartItemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
       
-      <main className="container py-8">
-        <h1 className="text-4xl font-bold text-foreground mb-8">Checkout</h1>
+      <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8">Checkout</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">

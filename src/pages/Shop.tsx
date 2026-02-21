@@ -63,29 +63,31 @@ const Shop = () => {
         onSearchChange={setSearchQuery}
       />
 
-      <main className="container py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+      <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">Shop Fresh & Quality Products</h1>
-              <p className="text-muted-foreground">Browse our complete range of groceries, beverages, and fresh produce</p>
+              <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-foreground mb-1 sm:mb-2">Shop Fresh & Quality Products</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Browse our complete range of groceries, beverages, and fresh produce</p>
             </div>
             {isWholesale && (
-              <div className="bg-primary/10 border border-primary/20 rounded-lg px-4 py-2">
-                <p className="text-sm font-semibold text-primary">🏪 Wholesale Mode Active</p>
-                <p className="text-xs text-muted-foreground">Bulk pricing • Min. quantities apply</p>
+              <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto">
+                <p className="text-xs sm:text-sm font-semibold text-primary">🏪 Wholesale Mode Active</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Bulk pricing • Min. quantities apply</p>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category)}
+                size="sm"
+                className="text-[10px] sm:text-xs md:text-sm h-7 sm:h-8 md:h-9 px-2 sm:px-3"
               >
                 {category}
               </Button>
@@ -93,7 +95,7 @@ const Shop = () => {
           </div>
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-48">
+            <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -106,13 +108,13 @@ const Shop = () => {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-            {Array.from({ length: 16 }).map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+            {Array.from({ length: 12 }).map((_, i) => (
               <Skeleton key={i} className="aspect-square rounded-lg" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
