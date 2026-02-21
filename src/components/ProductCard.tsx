@@ -88,23 +88,23 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
         </div>
       </Link>
 
-      <CardContent className="p-3 relative">
-        <p className="text-[9px] text-primary/70 uppercase tracking-widest mb-1 font-medium">{category}</p>
+      <CardContent className="p-2 sm:p-3 relative">
+        <p className="text-[8px] sm:text-[9px] text-primary/70 uppercase tracking-widest mb-0.5 sm:mb-1 font-medium">{category}</p>
         <Link to={`/product/${id}`}>
-          <h3 className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-1">
+          <h3 className="font-semibold text-xs sm:text-sm text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-2">
             {name}
           </h3>
         </Link>
-        <div className="flex items-baseline gap-2 mt-1">
-          <p className="text-lg font-bold text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
-            {displayPrice.toFixed(0)} <span className="text-xs font-normal">FRw</span>
+        <div className="flex items-baseline gap-1 sm:gap-2 mt-0.5 sm:mt-1">
+          <p className="text-sm sm:text-lg font-bold text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
+            {displayPrice.toFixed(0)} <span className="text-[10px] sm:text-xs font-normal">FRw</span>
           </p>
           {isWholesale && (
-            <p className="text-[10px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
           )}
         </div>
         {isWholesale && (
-          <p className="text-[9px] text-primary/60 mt-1 font-medium">Min: {minWholesaleQty} units</p>
+          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} units</p>
         )}
       </CardContent>
 
