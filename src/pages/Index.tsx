@@ -95,9 +95,9 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="h-[50px] border-y border-border flex items-center">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+      <section className="py-3 sm:py-4 border-y border-border">
+        <div className="container px-4 sm:px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-primary/10">
                 <Truck className="h-4 w-4 text-primary" />
