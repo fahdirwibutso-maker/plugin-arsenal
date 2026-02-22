@@ -67,9 +67,9 @@ const Users = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => toggleStatus(user.id)}>
-                          Toggle Status
+                      <div className="flex gap-1">
+                        <Button variant="outline" size="sm" className="text-xs px-2" onClick={() => toggleStatus(user.id)}>
+                          Toggle
                         </Button>
                         <Button variant="destructive" size="icon" onClick={() => handleDelete(user.id)}>
                           <Trash2 className="h-4 w-4" />
