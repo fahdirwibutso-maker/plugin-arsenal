@@ -80,8 +80,8 @@ const Dashboard = () => {
 
   return (
     <AdminLayout>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+      <div className="px-3 sm:px-4 py-4 sm:py-8 max-w-7xl mx-auto">
+        <h1 className="text-xl sm:text-3xl font-bold mb-4 sm:mb-8">Admin Dashboard</h1>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat) => (
