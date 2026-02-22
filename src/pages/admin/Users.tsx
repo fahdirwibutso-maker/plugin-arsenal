@@ -40,7 +40,7 @@ const Users = () => {
           <CardHeader>
             <CardTitle>All Users</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>

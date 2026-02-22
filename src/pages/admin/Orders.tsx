@@ -67,7 +67,8 @@ const Orders = () => {
           </TableRow>
         ))}
       </TableBody>
-    </Table>
+      </Table>
+    </div>
   );
 
   return (
