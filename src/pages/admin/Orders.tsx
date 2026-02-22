@@ -25,25 +25,26 @@ const Orders = () => {
   };
 
   const OrderTable = ({ orders, type }: { orders: any[]; type: string }) => (
+    <div className="overflow-x-auto">
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Order ID</TableHead>
           <TableHead>Customer</TableHead>
-          <TableHead>Items</TableHead>
+          <TableHead className="hidden sm:table-cell">Items</TableHead>
           <TableHead>Total</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Date</TableHead>
+          <TableHead className="hidden md:table-cell">Date</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {orders.map((order) => (
           <TableRow key={order.id}>
-            <TableCell className="font-medium">#{order.id}</TableCell>
-            <TableCell>{order.customer}</TableCell>
-            <TableCell>{order.items}</TableCell>
-            <TableCell>{order.total.toFixed(0)} FRw</TableCell>
+            <TableCell className="font-medium text-xs sm:text-sm">#{order.id}</TableCell>
+            <TableCell className="text-xs sm:text-sm">{order.customer}</TableCell>
+            <TableCell className="hidden sm:table-cell">{order.items}</TableCell>
+            <TableCell className="text-xs sm:text-sm">{order.total.toFixed(0)} FRw</TableCell>
             <TableCell>
               <Badge
                 variant={
@@ -57,7 +58,7 @@ const Orders = () => {
                 {order.status}
               </Badge>
             </TableCell>
-            <TableCell>{order.date}</TableCell>
+            <TableCell className="hidden md:table-cell">{order.date}</TableCell>
             <TableCell>
               <Button variant="outline" size="sm" onClick={() => updateStatus(order.id, type)}>
                 Update
@@ -66,7 +67,8 @@ const Orders = () => {
           </TableRow>
         ))}
       </TableBody>
-    </Table>
+      </Table>
+    </div>
   );
 
   return (

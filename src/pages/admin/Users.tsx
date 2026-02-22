@@ -40,12 +40,12 @@ const Users = () => {
           <CardHeader>
             <CardTitle>All Users</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead className="hidden sm:table-cell">Email</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
@@ -54,8 +54,8 @@ const Users = () => {
               <TableBody>
                 {users.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-sm">{user.name}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{user.email}</TableCell>
                     <TableCell>
                       <Badge variant={user.role === "Wholesale" ? "default" : "secondary"}>
                         {user.role}
@@ -67,9 +67,9 @@ const Users = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => toggleStatus(user.id)}>
-                          Toggle Status
+                      <div className="flex gap-1">
+                        <Button variant="outline" size="sm" className="text-xs px-2" onClick={() => toggleStatus(user.id)}>
+                          Toggle
                         </Button>
                         <Button variant="destructive" size="icon" onClick={() => handleDelete(user.id)}>
                           <Trash2 className="h-4 w-4" />
