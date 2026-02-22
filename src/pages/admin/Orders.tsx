@@ -58,7 +58,7 @@ const Orders = () => {
                 {order.status}
               </Badge>
             </TableCell>
-            <TableCell>{order.date}</TableCell>
+            <TableCell className="hidden md:table-cell">{order.date}</TableCell>
             <TableCell>
               <Button variant="outline" size="sm" onClick={() => updateStatus(order.id, type)}>
                 Update
