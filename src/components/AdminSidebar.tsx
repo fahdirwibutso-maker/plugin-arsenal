@@ -15,7 +15,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -34,10 +33,9 @@ export function AdminSidebar() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <Sidebar collapsible="icon" className="border-r hidden md:flex">
+    <Sidebar collapsible="icon" className="border-r">
       <div className="p-4 border-b flex items-center justify-between">
         {!isCollapsed && <h2 className="text-lg font-bold">Admin Panel</h2>}
-        <SidebarTrigger />
       </div>
 
       <SidebarContent>
