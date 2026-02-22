@@ -54,8 +54,8 @@ const Users = () => {
               <TableBody>
                 {users.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-sm">{user.name}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{user.email}</TableCell>
                     <TableCell>
                       <Badge variant={user.role === "Wholesale" ? "default" : "secondary"}>
                         {user.role}
