@@ -307,6 +307,7 @@ const Products = () => {
                       <TableCell className="hidden md:table-cell">
                         {product.wholesale_price ? `${Number(product.wholesale_price).toLocaleString()} FRw` : "—"}
                       </TableCell>
+                      <TableCell className="hidden sm:table-cell capitalize">{(product as any).unit || "piece"}</TableCell>
                       <TableCell>{product.stock}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
