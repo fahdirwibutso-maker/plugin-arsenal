@@ -89,7 +89,7 @@ const Header = ({
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent" />
-            <span className="text-xl font-bold text-foreground">FreshMart</span>
+            <span className="text-xl font-bold text-foreground">Wellar<span className="text-primary">Shop</span></span>
           </Link>
           
           {/* Desktop Navigation */}

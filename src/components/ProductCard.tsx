@@ -102,14 +102,17 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
         </Link>
         <div className="flex items-baseline gap-1 sm:gap-2 mt-0.5 sm:mt-1">
           <p className="text-sm sm:text-lg font-bold text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
-            {displayPrice.toFixed(0)} <span className="text-[10px] sm:text-xs font-normal">FRw</span>
+            {displayPrice.toFixed(0)} <span className="text-[10px] sm:text-xs font-normal">FRw/{unit}</span>
           </p>
-          {isWholesale && (
+          {isWholesale && canWholesale && (
             <p className="text-[9px] sm:text-[10px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
           )}
         </div>
-        {isWholesale && (
-          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} units</p>
+        {isWholesale && canWholesale && (
+          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} {unit}s</p>
+        )}
+        {!canWholesale && isWholesale && (
+          <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 sm:mt-1">Retail only</p>
         )}
       </CardContent>
 
