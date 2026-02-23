@@ -282,6 +282,7 @@ const Products = () => {
                     <TableHead className="hidden sm:table-cell">Category</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead className="hidden md:table-cell">Wholesale</TableHead>
+                    <TableHead className="hidden sm:table-cell">Unit</TableHead>
                     <TableHead>Stock</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
