@@ -13,12 +13,17 @@ interface ProductCardProps {
   image: string;
   category: string;
   isWholesale?: boolean;
+  unit?: string;
+  wholesalePrice?: number | null;
+  minWholesaleQty?: number | null;
 }
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false }: ProductCardProps) => {
-  const wholesaleDiscount = 0.25;
-  const displayPrice = isWholesale ? price * (1 - wholesaleDiscount) : price;
-  const minWholesaleQty = 10;
+const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
+
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty = 12 }: ProductCardProps) => {
+  const isBulkUnit = WHOLESALE_UNITS.includes(unit.toLowerCase()) || (minWholesaleQty !== null && minWholesaleQty >= 12);
+  const canWholesale = isBulkUnit && wholesalePrice != null;
+  const displayPrice = isWholesale && canWholesale ? wholesalePrice! : price;
   const { toast } = useToast();
 
   const handleAddToCart = async () => {
