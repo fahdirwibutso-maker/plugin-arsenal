@@ -104,6 +104,7 @@ const Products = () => {
         wholesale_price: formData.get("wholesalePrice") ? parseFloat(formData.get("wholesalePrice") as string) : null,
         stock: parseInt(formData.get("stock") as string) || 0,
         category: formData.get("category") as string,
+        unit: formData.get("unit") as string || "piece",
         image: imageUrl,
       };
 
