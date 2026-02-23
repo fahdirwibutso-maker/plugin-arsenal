@@ -13,12 +13,17 @@ interface ProductCardProps {
   image: string;
   category: string;
   isWholesale?: boolean;
+  unit?: string;
+  wholesalePrice?: number | null;
+  minWholesaleQty?: number | null;
 }
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false }: ProductCardProps) => {
-  const wholesaleDiscount = 0.25;
-  const displayPrice = isWholesale ? price * (1 - wholesaleDiscount) : price;
-  const minWholesaleQty = 10;
+const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
+
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty = 12 }: ProductCardProps) => {
+  const isBulkUnit = WHOLESALE_UNITS.includes(unit.toLowerCase()) || (minWholesaleQty !== null && minWholesaleQty >= 12);
+  const canWholesale = isBulkUnit && wholesalePrice != null;
+  const displayPrice = isWholesale && canWholesale ? wholesalePrice! : price;
   const { toast } = useToast();
 
   const handleAddToCart = async () => {
@@ -97,14 +102,17 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false }: 
         </Link>
         <div className="flex items-baseline gap-1 sm:gap-2 mt-0.5 sm:mt-1">
           <p className="text-sm sm:text-lg font-bold text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
-            {displayPrice.toFixed(0)} <span className="text-[10px] sm:text-xs font-normal">FRw</span>
+            {displayPrice.toFixed(0)} <span className="text-[10px] sm:text-xs font-normal">FRw/{unit}</span>
           </p>
-          {isWholesale && (
+          {isWholesale && canWholesale && (
             <p className="text-[9px] sm:text-[10px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
           )}
         </div>
-        {isWholesale && (
-          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} units</p>
+        {isWholesale && canWholesale && (
+          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} {unit}s</p>
+        )}
+        {!canWholesale && isWholesale && (
+          <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 sm:mt-1">Retail only</p>
         )}
       </CardContent>
 

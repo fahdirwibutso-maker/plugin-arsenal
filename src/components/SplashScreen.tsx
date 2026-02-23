@@ -62,7 +62,7 @@ const SplashScreen = () => {
 
         {/* App name */}
         <h1 className="text-4xl font-bold text-foreground mb-2 tracking-tight">
-          Fresh<span className="text-primary">Mart</span>
+          Wellar<span className="text-primary">Shop</span>
         </h1>
         <p className="text-muted-foreground text-sm tracking-widest uppercase">
           Your Smart Supermarket

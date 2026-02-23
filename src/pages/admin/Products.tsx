@@ -3,6 +3,7 @@ import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -103,6 +104,7 @@ const Products = () => {
         wholesale_price: formData.get("wholesalePrice") ? parseFloat(formData.get("wholesalePrice") as string) : null,
         stock: parseInt(formData.get("stock") as string) || 0,
         category: formData.get("category") as string,
+        unit: formData.get("unit") as string || "piece",
         image: imageUrl,
       };
 
@@ -204,9 +206,26 @@ const Products = () => {
                     <Input id="wholesalePrice" name="wholesalePrice" type="number" step="1" min="0" defaultValue={editingProduct?.wholesale_price} />
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="stock">Stock</Label>
-                  <Input id="stock" name="stock" type="number" min="0" defaultValue={editingProduct?.stock ?? 0} required />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="stock">Stock</Label>
+                    <Input id="stock" name="stock" type="number" min="0" defaultValue={editingProduct?.stock ?? 0} required />
+                  </div>
+                  <div>
+                    <Label htmlFor="unit">Selling Unit</Label>
+                    <Select name="unit" defaultValue={editingProduct?.unit || "piece"}>
+                      <SelectTrigger id="unit">
+                        <SelectValue placeholder="Select unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="piece">Piece (pcs)</SelectItem>
+                        <SelectItem value="bag">Bag</SelectItem>
+                        <SelectItem value="carton">Carton</SelectItem>
+                        <SelectItem value="kg">Kilogram (kg)</SelectItem>
+                        <SelectItem value="pack">Pack (12+ pcs)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div>
                   <Label>Product Image</Label>
@@ -263,6 +282,7 @@ const Products = () => {
                     <TableHead className="hidden sm:table-cell">Category</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead className="hidden md:table-cell">Wholesale</TableHead>
+                    <TableHead className="hidden sm:table-cell">Unit</TableHead>
                     <TableHead>Stock</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -287,6 +307,7 @@ const Products = () => {
                       <TableCell className="hidden md:table-cell">
                         {product.wholesale_price ? `${Number(product.wholesale_price).toLocaleString()} FRw` : "—"}
                       </TableCell>
+                      <TableCell className="hidden sm:table-cell capitalize">{(product as any).unit || "piece"}</TableCell>
                       <TableCell>{product.stock}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">

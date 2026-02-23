@@ -155,6 +155,9 @@ const Index = () => {
                 image={product.image}
                 category={product.category}
                 isWholesale={isWholesale}
+                unit={(product as any).unit || "piece"}
+                wholesalePrice={product.wholesale_price}
+                minWholesaleQty={product.min_wholesale_qty}
               />
             ))}
           </div>
@@ -165,7 +168,7 @@ const Index = () => {
       <section className="py-10 sm:py-16 md:py-20 bg-gradient-to-br from-primary to-accent">
         <div className="container px-4 sm:px-6 text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-foreground mb-3 sm:mb-4">
-            Join FreshMart Rewards
+            Join WellarShop Rewards
           </h2>
           <p className="text-sm sm:text-base md:text-xl text-primary-foreground/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
             Get exclusive deals, wholesale pricing access, and earn points on every purchase
