@@ -206,9 +206,26 @@ const Products = () => {
                     <Input id="wholesalePrice" name="wholesalePrice" type="number" step="1" min="0" defaultValue={editingProduct?.wholesale_price} />
                   </div>
                 </div>
-                <div>
-                  <Label htmlFor="stock">Stock</Label>
-                  <Input id="stock" name="stock" type="number" min="0" defaultValue={editingProduct?.stock ?? 0} required />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="stock">Stock</Label>
+                    <Input id="stock" name="stock" type="number" min="0" defaultValue={editingProduct?.stock ?? 0} required />
+                  </div>
+                  <div>
+                    <Label htmlFor="unit">Selling Unit</Label>
+                    <Select name="unit" defaultValue={editingProduct?.unit || "piece"}>
+                      <SelectTrigger id="unit">
+                        <SelectValue placeholder="Select unit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="piece">Piece (pcs)</SelectItem>
+                        <SelectItem value="bag">Bag</SelectItem>
+                        <SelectItem value="carton">Carton</SelectItem>
+                        <SelectItem value="kg">Kilogram (kg)</SelectItem>
+                        <SelectItem value="pack">Pack (12+ pcs)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div>
                   <Label>Product Image</Label>
