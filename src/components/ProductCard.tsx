@@ -20,9 +20,11 @@ interface ProductCardProps {
 
 const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty = 12 }: ProductCardProps) => {
-  const isBulkUnit = WHOLESALE_UNITS.includes(unit.toLowerCase()) || (minWholesaleQty !== null && minWholesaleQty >= 12);
-  const canWholesale = isBulkUnit && wholesalePrice != null;
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty }: ProductCardProps) => {
+  const unitLower = unit.toLowerCase();
+  const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
+  const isBulkQty = minWholesaleQty !== null && minWholesaleQty !== undefined && minWholesaleQty >= 12;
+  const canWholesale = (isBulkUnit || isBulkQty) && wholesalePrice != null && wholesalePrice > 0;
   const displayPrice = isWholesale && canWholesale ? wholesalePrice! : price;
   const { toast } = useToast();
 
