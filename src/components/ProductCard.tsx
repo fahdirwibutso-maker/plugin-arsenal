@@ -111,7 +111,9 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
           )}
         </div>
         {isWholesale && canWholesale && (
-          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} {unit}s</p>
+          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">
+            {isBulkUnit ? `Sold per ${unit}` : `Min: ${minWholesaleQty} pcs`}
+          </p>
         )}
         {!canWholesale && isWholesale && (
           <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 sm:mt-1">Retail only</p>
