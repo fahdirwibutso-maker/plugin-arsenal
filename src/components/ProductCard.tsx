@@ -20,9 +20,11 @@ interface ProductCardProps {
 
 const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty = 12 }: ProductCardProps) => {
-  const isBulkUnit = WHOLESALE_UNITS.includes(unit.toLowerCase()) || (minWholesaleQty !== null && minWholesaleQty >= 12);
-  const canWholesale = isBulkUnit && wholesalePrice != null;
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty }: ProductCardProps) => {
+  const unitLower = unit.toLowerCase();
+  const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
+  const isBulkQty = minWholesaleQty !== null && minWholesaleQty !== undefined && minWholesaleQty >= 12;
+  const canWholesale = (isBulkUnit || isBulkQty) && wholesalePrice != null && wholesalePrice > 0;
   const displayPrice = isWholesale && canWholesale ? wholesalePrice! : price;
   const { toast } = useToast();
 
@@ -109,7 +111,9 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
           )}
         </div>
         {isWholesale && canWholesale && (
-          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">Min: {minWholesaleQty} {unit}s</p>
+          <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">
+            {isBulkUnit ? `Sold per ${unit}` : `Min: ${minWholesaleQty} pcs`}
+          </p>
         )}
         {!canWholesale && isWholesale && (
           <p className="text-[8px] sm:text-[9px] text-muted-foreground mt-0.5 sm:mt-1">Retail only</p>

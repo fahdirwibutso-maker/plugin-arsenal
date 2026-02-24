@@ -124,7 +124,7 @@ const Shop = () => {
                 image={product.image}
                 category={product.category}
                 isWholesale={isWholesale}
-                unit={(product as any).unit || "piece"}
+                unit={product.unit || "piece"}
                 wholesalePrice={product.wholesale_price}
                 minWholesaleQty={product.min_wholesale_qty}
               />
