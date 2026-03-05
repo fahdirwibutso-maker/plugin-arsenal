@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCartCount } from "@/hooks/useCartCount";
 
 const categories = [
   "All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery",
@@ -17,6 +18,7 @@ const Shop = () => {
   const [sortBy, setSortBy] = useState("featured");
   const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const { count: cartItemCount } = useCartCount();
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
@@ -56,7 +58,7 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header
-        cartItemCount={0}
+        cartItemCount={cartItemCount}
         isWholesale={isWholesale}
         onWholesaleToggle={setIsWholesale}
         searchQuery={searchQuery}
