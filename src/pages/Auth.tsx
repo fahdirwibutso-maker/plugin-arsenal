@@ -16,7 +16,7 @@ const signupSchema = z.object({
 });
 
 const loginSchema = z.object({
-  phone: z.string().trim().min(10, "Phone number required"),
+  identifier: z.string().trim().min(1, "Phone number or email required"),
   password: z.string().min(6, "Password required"),
 });
 
@@ -24,30 +24,23 @@ const Auth = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   
-  // Signup form
   const [signupUsername, setSignupUsername] = useState("");
   const [signupPhone, setSignupPhone] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   
-  // Login form
-  const [loginPhone, setLoginPhone] = useState("");
+  const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       const validated = signupSchema.parse({
         username: signupUsername,
         phone: signupPhone,
         password: signupPassword,
       });
-
       setIsLoading(true);
-
-      // Create a temporary email from phone for auth
       const email = `${validated.phone}@freshmart.local`;
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password: validated.password,
@@ -56,12 +49,9 @@ const Auth = () => {
             username: validated.username,
             phone_number: validated.phone,
           },
-          emailRedirectTo: `${window.location.origin}/`,
         },
       });
-
       if (error) throw error;
-
       if (data.user) {
         toast.success("Account created successfully!");
         navigate("/shop");
@@ -70,7 +60,7 @@ const Auth = () => {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else if (error.message?.includes("already registered")) {
-        toast.error("Username already exists. Please choose another.");
+        toast.error("This phone number is already registered.");
       } else {
         toast.error(error.message || "Failed to create account");
       }
@@ -81,34 +71,40 @@ const Auth = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     try {
       const validated = loginSchema.parse({
-        phone: loginPhone,
+        identifier: loginIdentifier,
         password: loginPassword,
       });
-
       setIsLoading(true);
 
-      // Convert phone to email format
-      const email = `${validated.phone}@freshmart.local`;
-      
+      // Detect if input is an email or phone number
+      const isEmail = validated.identifier.includes("@");
+      const email = isEmail ? validated.identifier : `${validated.identifier}@freshmart.local`;
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password: validated.password,
       });
-
       if (error) throw error;
 
       if (data.user) {
+        // Check if admin and redirect accordingly
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+
         toast.success("Logged in successfully!");
-        navigate("/shop");
+        navigate(roleData ? "/admin" : "/shop");
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
         toast.error(error.errors[0].message);
       } else if (error.message?.includes("Invalid login")) {
-        toast.error("Invalid username or password");
+        toast.error("Invalid credentials. Check your phone/email and password.");
       } else {
         toast.error(error.message || "Failed to login");
       }
@@ -124,7 +120,7 @@ const Auth = () => {
           <div className="flex justify-center mb-4">
             <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent" />
           </div>
-          <CardTitle className="text-2xl font-bold">FreshMart</CardTitle>
+          <CardTitle className="text-2xl font-bold">Wellar<span className="text-primary">Shop</span></CardTitle>
           <CardDescription>Sign in to start shopping</CardDescription>
         </CardHeader>
         <CardContent>
@@ -137,13 +133,13 @@ const Auth = () => {
             <TabsContent value="login">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-phone">Phone Number</Label>
+                  <Label htmlFor="login-identifier">Phone Number or Email</Label>
                   <Input
-                    id="login-phone"
-                    type="tel"
-                    value={loginPhone}
-                    onChange={(e) => setLoginPhone(e.target.value)}
-                    placeholder="Enter your phone number"
+                    id="login-identifier"
+                    type="text"
+                    value={loginIdentifier}
+                    onChange={(e) => setLoginIdentifier(e.target.value)}
+                    placeholder="Phone number or admin@admin.com"
                     required
                   />
                 </div>

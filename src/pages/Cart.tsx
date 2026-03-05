@@ -6,6 +6,7 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useCartCount } from "@/hooks/useCartCount";
 
 interface CartItem {
   id: string;
@@ -22,12 +23,12 @@ const Cart = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { count: cartItemCount, refresh: refreshCartCount } = useCartCount();
 
   const fetchCartItems = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // Load guest cart from localStorage
       const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
       setCartItems(guestCart.map((item: any, index: number) => ({ ...item, id: `guest-${index}` })));
       setLoading(false);
@@ -55,13 +56,13 @@ const Cart = () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // Update guest cart
       const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
       const index = parseInt(id.replace("guest-", ""));
       if (guestCart[index]) {
         guestCart[index].quantity = newQuantity;
         localStorage.setItem("guestCart", JSON.stringify(guestCart));
         fetchCartItems();
+        refreshCartCount();
       }
       return;
     }
@@ -72,36 +73,38 @@ const Cart = () => {
       .eq("id", id);
     
     fetchCartItems();
+    refreshCartCount();
   };
 
   const removeItem = async (id: string) => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      // Remove from guest cart
       const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
       const index = parseInt(id.replace("guest-", ""));
       guestCart.splice(index, 1);
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
       toast({ title: "Item removed from cart" });
       fetchCartItems();
+      refreshCartCount();
       return;
     }
     
     await supabase.from("cart_items").delete().eq("id", id);
     toast({ title: "Item removed from cart" });
     fetchCartItems();
+    refreshCartCount();
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product_price * item.quantity, 0);
-  const shipping = subtotal > 0 ? 9.99 : 0;
+  const shipping = subtotal > 50000 ? 0 : 2000;
   const total = subtotal + shipping;
 
   if (loading) return <div className="min-h-screen bg-background"><Header cartItemCount={0} /></div>;
 
   return (
     <div className="min-h-screen bg-background">
-      <Header cartItemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
+      <Header cartItemCount={cartItemCount} />
       
       <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4 sm:mb-6 md:mb-8">Shopping Cart</h1>
@@ -144,7 +147,7 @@ const Cart = () => {
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>
-                        <p className="text-lg font-bold text-primary">{(item.product_price * item.quantity).toFixed(0)} FRw</p>
+                        <p className="text-lg font-bold text-primary">{(item.product_price * item.quantity).toLocaleString()} FRw</p>
                       </div>
                     </div>
                   </div>
@@ -152,39 +155,42 @@ const Cart = () => {
               ))}
             </div>
 
-          <div>
-            <Card className="p-6 sticky top-24">
-              <h2 className="text-xl font-bold text-foreground mb-4">Order Summary</h2>
-              
-              <div className="space-y-3 mb-4">
-                <div className="flex justify-between text-muted-foreground">
-                  <span>Subtotal</span>
-                  <span>{subtotal.toFixed(0)} FRw</span>
+            <div>
+              <Card className="p-6 sticky top-24">
+                <h2 className="text-xl font-bold text-foreground mb-4">Order Summary</h2>
+                
+                <div className="space-y-3 mb-4">
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Subtotal</span>
+                    <span>{subtotal.toLocaleString()} FRw</span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>Shipping</span>
+                    <span>{shipping === 0 ? "Free" : `${shipping.toLocaleString()} FRw`}</span>
+                  </div>
+                  {subtotal > 0 && subtotal <= 50000 && (
+                    <p className="text-[10px] text-primary">Free shipping on orders over 50,000 FRw!</p>
+                  )}
+                  <div className="border-t border-border pt-3 flex justify-between text-lg font-bold">
+                    <span>Total</span>
+                    <span className="text-primary">{total.toLocaleString()} FRw</span>
+                  </div>
                 </div>
-                <div className="flex justify-between text-muted-foreground">
-                  <span>Shipping</span>
-                  <span>{shipping.toFixed(0)} FRw</span>
-                </div>
-                <div className="border-t border-border pt-3 flex justify-between text-lg font-bold">
-                  <span>Total</span>
-                  <span className="text-primary">{total.toFixed(0)} FRw</span>
-                </div>
-              </div>
 
-              <Link to="/checkout">
-                <Button className="w-full" size="lg">
-                  Proceed to Checkout
-                </Button>
-              </Link>
-              
-              <Link to="/shop">
-                <Button variant="outline" className="w-full mt-2">
-                  Continue Shopping
-                </Button>
-              </Link>
-            </Card>
+                <Link to="/checkout">
+                  <Button className="w-full" size="lg">
+                    Proceed to Checkout
+                  </Button>
+                </Link>
+                
+                <Link to="/shop">
+                  <Button variant="outline" className="w-full mt-2">
+                    Continue Shopping
+                  </Button>
+                </Link>
+              </Card>
+            </div>
           </div>
-        </div>
         )}
       </main>
     </div>

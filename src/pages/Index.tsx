@@ -9,12 +9,14 @@ import supermarket2 from "@/assets/supermarket-2.jpg";
 import supermarket3 from "@/assets/supermarket-3.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useCartCount } from "@/hooks/useCartCount";
 
 const Index = () => {
   const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [supermarket1, supermarket2, supermarket3];
+  const { count: cartItemCount } = useCartCount();
 
   const { data: featuredProducts = [] } = useQuery({
     queryKey: ["featured-products"],
@@ -39,7 +41,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header 
-        cartItemCount={0} 
+        cartItemCount={cartItemCount} 
         isWholesale={isWholesale}
         onWholesaleToggle={setIsWholesale}
         searchQuery={searchQuery}
@@ -48,7 +50,6 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden h-[200px] sm:h-[220px] md:h-[260px]">
-        {/* Background Slideshow */}
         <div className="absolute inset-0">
           {slides.map((slide, index) => (
             <div
@@ -62,11 +63,9 @@ const Index = () => {
               }}
             />
           ))}
-          {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/50" />
         </div>
 
-        {/* Content */}
         <div className="container relative h-full flex items-center px-4 sm:px-6">
           <div className="max-w-3xl">
             <h1 className="text-lg sm:text-xl md:text-3xl font-bold mb-2 leading-tight">
@@ -86,7 +85,7 @@ const Index = () => {
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
               </Link>
-              <Button size="sm" variant="outline" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4">
+              <Button size="sm" variant="outline" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4" onClick={() => setIsWholesale(true)}>
                 Wholesale Pricing
               </Button>
             </div>
@@ -155,7 +154,7 @@ const Index = () => {
                 image={product.image}
                 category={product.category}
                 isWholesale={isWholesale}
-                unit={(product as any).unit || "piece"}
+                unit={product.unit || "piece"}
                 wholesalePrice={product.wholesale_price}
                 minWholesaleQty={product.min_wholesale_qty}
               />

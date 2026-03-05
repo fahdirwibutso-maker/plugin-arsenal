@@ -48,6 +48,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
       }
 
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
+      window.dispatchEvent(new CustomEvent("cart-updated"));
       toast({ title: "Added to cart", description: `${name} has been added to your cart` });
       return;
     }
@@ -75,6 +76,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
       });
     }
 
+    window.dispatchEvent(new CustomEvent("cart-updated"));
     toast({ title: "Added to cart", description: `${name} has been added to your cart` });
   };
 
@@ -104,10 +106,10 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
         </Link>
         <div className="flex items-baseline gap-1 sm:gap-2 mt-0.5 sm:mt-1">
           <p className="text-sm sm:text-lg font-bold text-primary drop-shadow-[0_0_10px_hsl(var(--primary)/0.5)]">
-            {displayPrice.toFixed(0)} <span className="text-[10px] sm:text-xs font-normal">FRw/{unit}</span>
+            {displayPrice.toLocaleString()} <span className="text-[10px] sm:text-xs font-normal">FRw/{unit}</span>
           </p>
           {isWholesale && canWholesale && (
-            <p className="text-[9px] sm:text-[10px] text-muted-foreground line-through">{price.toFixed(0)} FRw</p>
+            <p className="text-[9px] sm:text-[10px] text-muted-foreground line-through">{price.toLocaleString()} FRw</p>
           )}
         </div>
         {isWholesale && canWholesale && (
