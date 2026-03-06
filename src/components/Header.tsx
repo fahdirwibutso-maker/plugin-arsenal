@@ -136,7 +136,12 @@ const Header = ({
           {/* User Account */}
           {user && username ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">{username}</span>
+              <Link to="/orders">
+                <Button variant="ghost" size="icon" title="My Orders">
+                  <Package className="h-5 w-5" />
+                </Button>
+              </Link>
+              <span className="text-sm font-medium hidden sm:inline">{username}</span>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
                 Logout
               </Button>
