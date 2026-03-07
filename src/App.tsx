@@ -19,13 +19,15 @@ import AdminUsers from "./pages/admin/Users";
 import AdminOrders from "./pages/admin/Orders";
 import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
+import { useOrderNotifications } from "./hooks/useOrderNotifications";
 
 const queryClient = new QueryClient();
 
+function AppContent() {
+  useOrderNotifications();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+  return (
+    <>
       <SplashScreen />
       <Toaster />
       <Sonner />
@@ -49,6 +51,14 @@ const App = () => (
         </Routes>
         <InstallPrompt />
       </BrowserRouter>
+    </>
+  );
+}
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <AppContent />
     </TooltipProvider>
   </QueryClientProvider>
 );
