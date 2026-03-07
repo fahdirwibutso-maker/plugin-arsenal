@@ -7,6 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartCount } from "@/hooks/useCartCount";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Package } from "lucide-react";
 
 const categories = [
   "All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery",
