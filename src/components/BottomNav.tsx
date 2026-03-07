@@ -2,10 +2,6 @@ import { Home, Store, ShoppingCart, Package, User } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-interface BottomNavProps {
-  cartItemCount?: number;
-}
-
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Store, label: "Shop", path: "/shop" },
