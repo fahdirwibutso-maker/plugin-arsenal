@@ -85,6 +85,24 @@ const Shop = () => {
         </div>
 
         <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
+          {/* Mobile Wholesale Toggle */}
+          <div className="flex items-center justify-between p-3 rounded-lg bg-card border border-border md:hidden">
+            <Label htmlFor="wholesale-mobile-shop" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
+              <Package className="h-4 w-4 text-primary" />
+              <span>Wholesale Mode</span>
+            </Label>
+            <div className="flex items-center gap-2">
+              <span className={`text-xs ${isWholesale ? "text-primary font-semibold" : "text-muted-foreground"}`}>
+                {isWholesale ? "ON" : "OFF"}
+              </span>
+              <Switch
+                id="wholesale-mobile-shop"
+                checked={isWholesale}
+                onCheckedChange={setIsWholesale}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {categories.map((category) => (
               <Button
