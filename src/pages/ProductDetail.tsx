@@ -35,8 +35,7 @@ const ProductDetail = () => {
 
   const unitLower = product?.unit?.toLowerCase() || "piece";
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
-  const isBulkQty = product?.min_wholesale_qty != null && product.min_wholesale_qty >= 12;
-  const canWholesale = (isBulkUnit || isBulkQty) && product?.wholesale_price != null && product.wholesale_price > 0;
+  const canWholesale = product?.wholesale_price != null && product.wholesale_price > 0;
   const displayPrice = isWholesale && canWholesale ? product!.wholesale_price! : product?.price || 0;
 
   const handleAddToCart = async () => {
@@ -163,7 +162,7 @@ const ProductDetail = () => {
                   <Label htmlFor="wholesale-detail" className="text-sm cursor-pointer flex-1">
                     Wholesale Price
                     <span className="block text-xs text-muted-foreground">
-                      {isBulkUnit ? `Sold per ${product.unit}` : `Min: ${product.min_wholesale_qty} pcs`}
+                      {isBulkUnit ? `Sold per ${product.unit}` : `Min: ${product.min_wholesale_qty || 10} pcs`}
                     </span>
                   </Label>
                   <Switch id="wholesale-detail" checked={isWholesale} onCheckedChange={setIsWholesale} />
