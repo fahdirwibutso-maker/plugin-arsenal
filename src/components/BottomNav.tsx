@@ -17,6 +17,9 @@ const navItems = [
 const BottomNav = ({ cartItemCount = 0 }: BottomNavProps) => {
   const location = useLocation();
 
+  // Hide on admin pages
+  if (location.pathname.startsWith("/admin")) return null;
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border lg:hidden safe-area-bottom">
       <div className="flex items-center justify-around h-16 px-2">
