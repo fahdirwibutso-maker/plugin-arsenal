@@ -55,6 +55,10 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 @layer utilities {

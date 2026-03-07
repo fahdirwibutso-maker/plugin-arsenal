@@ -120,7 +120,7 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header cartItemCount={cartItemCount} />
 
       <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
