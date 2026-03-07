@@ -23,8 +23,7 @@ const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty }: ProductCardProps) => {
   const unitLower = unit.toLowerCase();
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
-  const isBulkQty = minWholesaleQty !== null && minWholesaleQty !== undefined && minWholesaleQty >= 12;
-  const canWholesale = (isBulkUnit || isBulkQty) && wholesalePrice != null && wholesalePrice > 0;
+  const canWholesale = wholesalePrice != null && wholesalePrice > 0;
   const displayPrice = isWholesale && canWholesale ? wholesalePrice! : price;
   const { toast } = useToast();
 
@@ -114,7 +113,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
         </div>
         {isWholesale && canWholesale && (
           <p className="text-[8px] sm:text-[9px] text-primary/60 mt-0.5 sm:mt-1 font-medium">
-            {isBulkUnit ? `Sold per ${unit}` : `Min: ${minWholesaleQty} pcs`}
+            {isBulkUnit ? `Sold per ${unit}` : `Min: ${minWholesaleQty || 10} pcs`}
           </p>
         )}
         {!canWholesale && isWholesale && (
