@@ -20,11 +20,14 @@ import AdminOrders from "./pages/admin/Orders";
 import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
 import { useOrderNotifications } from "./hooks/useOrderNotifications";
+import BottomNav from "./components/BottomNav";
+import { useCartCount } from "./hooks/useCartCount";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
   useOrderNotifications();
+  const { count: cartCount } = useCartCount();
 
   return (
     <>
@@ -49,6 +52,7 @@ function AppContent() {
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <BottomNav cartItemCount={cartCount} />
         <InstallPrompt />
       </BrowserRouter>
     </>
