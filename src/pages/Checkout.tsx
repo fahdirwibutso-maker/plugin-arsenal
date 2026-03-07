@@ -203,7 +203,7 @@ const Checkout = () => {
   if (loading) return <div className="min-h-screen bg-background"><Header cartItemCount={0} /></div>;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header cartItemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
 
       <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
