@@ -1,39 +1,51 @@
 import { useState } from "react";
 import { AdminLayout } from "@/components/AdminLayout";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Users = () => {
-  const [users, setUsers] = useState([
-    { id: 1, name: "John Doe", email: "john@example.com", role: "Customer", status: "Active" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "Wholesale", status: "Active" },
-    { id: 3, name: "Bob Wilson", email: "bob@example.com", role: "Customer", status: "Inactive" },
-    { id: 4, name: "Alice Brown", email: "alice@example.com", role: "Wholesale", status: "Active" },
-  ]);
+  const queryClient = useQueryClient();
 
-  const handleDelete = (id: number) => {
-    setUsers(users.filter((u) => u.id !== id));
-    toast.success("User deleted successfully");
-  };
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ["admin-users"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  const toggleStatus = (id: number) => {
-    setUsers(
-      users.map((u) =>
-        u.id === id ? { ...u, status: u.status === "Active" ? "Inactive" : "Active" } : u
-      )
-    );
-    toast.success("User status updated");
-  };
+  const toggleWholesale = useMutation({
+    mutationFn: async ({ userId, isWholesale }: { userId: string; isWholesale: boolean }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_wholesale: isWholesale })
+        .eq("user_id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      toast.success("User wholesale status updated");
+    },
+    onError: () => {
+      toast.error("Failed to update wholesale status");
+    },
+  });
 
   return (
     <AdminLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">User Management</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">User Management</h1>
         </div>
 
         <Card>
@@ -44,40 +56,45 @@ const Users = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead className="hidden sm:table-cell">Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Username</TableHead>
+                  <TableHead className="hidden sm:table-cell">Phone</TableHead>
+                  <TableHead>Wholesale</TableHead>
+                  <TableHead className="hidden sm:table-cell">Joined</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="font-medium text-xs sm:text-sm">{user.name}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{user.email}</TableCell>
-                    <TableCell>
-                      <Badge variant={user.role === "Wholesale" ? "default" : "secondary"}>
-                        {user.role}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={user.status === "Active" ? "default" : "outline"}>
-                        {user.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button variant="outline" size="sm" className="text-xs px-2" onClick={() => toggleStatus(user.id)}>
-                          Toggle
-                        </Button>
-                        <Button variant="destructive" size="icon" onClick={() => handleDelete(user.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">Loading users...</TableCell>
                   </TableRow>
-                ))}
+                ) : users.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">No users found</TableCell>
+                  </TableRow>
+                ) : (
+                  users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell className="font-medium text-xs sm:text-sm">{user.username}</TableCell>
+                      <TableCell className="hidden sm:table-cell text-xs sm:text-sm">{user.phone_number}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={user.is_wholesale ?? false}
+                            onCheckedChange={(checked) =>
+                              toggleWholesale.mutate({ userId: user.user_id, isWholesale: checked })
+                            }
+                          />
+                          <Badge variant={user.is_wholesale ? "default" : "secondary"} className="text-[10px] sm:text-xs">
+                            {user.is_wholesale ? "Wholesale" : "Retail"}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell text-xs text-muted-foreground">
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
