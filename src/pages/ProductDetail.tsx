@@ -7,9 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartCount } from "@/hooks/useCartCount";
-import { useState } from "react";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 
 const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 
@@ -17,7 +15,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const { count: cartItemCount, refresh: refreshCartCount } = useCartCount();
-  const [isWholesale, setIsWholesale] = useState(false);
+  const { isWholesale } = useWholesaleStatus();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
@@ -120,7 +118,7 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
-      <Header cartItemCount={cartItemCount} />
+      <Header cartItemCount={cartItemCount} isWholesale={isWholesale} />
 
       <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
         <Link to="/shop" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 sm:mb-8">
@@ -156,16 +154,12 @@ const ProductDetail = () => {
                 )}
               </div>
 
-              {canWholesale && (
+              {isWholesale && canWholesale && (
                 <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/10">
                   <Package className="h-4 w-4 text-primary" />
-                  <Label htmlFor="wholesale-detail" className="text-sm cursor-pointer flex-1">
-                    Wholesale Price
-                    <span className="block text-xs text-muted-foreground">
-                      {isBulkUnit ? `Sold per ${product.unit}` : `Min: ${product.min_wholesale_qty || 10} pcs`}
-                    </span>
-                  </Label>
-                  <Switch id="wholesale-detail" checked={isWholesale} onCheckedChange={setIsWholesale} />
+                  <span className="text-sm text-primary font-medium">
+                    Wholesale Price — {isBulkUnit ? `Sold per ${product.unit}` : `Min: ${product.min_wholesale_qty || 10} pcs`}
+                  </span>
                 </div>
               )}
             </div>

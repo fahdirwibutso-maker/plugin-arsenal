@@ -7,9 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartCount } from "@/hooks/useCartCount";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Package } from "lucide-react";
+import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 
 const categories = [
   "All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery",
@@ -19,9 +17,9 @@ const categories = [
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
-  const [isWholesale, setIsWholesale] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { count: cartItemCount } = useCartCount();
+  const { isWholesale } = useWholesaleStatus();
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
@@ -63,7 +61,6 @@ const Shop = () => {
       <Header
         cartItemCount={cartItemCount}
         isWholesale={isWholesale}
-        onWholesaleToggle={setIsWholesale}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
@@ -77,32 +74,14 @@ const Shop = () => {
             </div>
             {isWholesale && (
               <div className="bg-primary/10 border border-primary/20 rounded-lg px-3 py-1.5 sm:px-4 sm:py-2 self-start sm:self-auto">
-                <p className="text-xs sm:text-sm font-semibold text-primary">🏪 Wholesale Mode Active</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Bulk pricing • Min. quantities apply</p>
+                <p className="text-xs sm:text-sm font-semibold text-primary">🏪 Wholesale Account</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Bulk pricing active</p>
               </div>
             )}
           </div>
         </div>
 
         <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
-          {/* Mobile Wholesale Toggle */}
-          <div className="flex items-center justify-between p-3 rounded-lg bg-card border border-border md:hidden">
-            <Label htmlFor="wholesale-mobile-shop" className="text-sm font-medium flex items-center gap-2 cursor-pointer">
-              <Package className="h-4 w-4 text-primary" />
-              <span>Wholesale Mode</span>
-            </Label>
-            <div className="flex items-center gap-2">
-              <span className={`text-xs ${isWholesale ? "text-primary font-semibold" : "text-muted-foreground"}`}>
-                {isWholesale ? "ON" : "OFF"}
-              </span>
-              <Switch
-                id="wholesale-mobile-shop"
-                checked={isWholesale}
-                onCheckedChange={setIsWholesale}
-              />
-            </div>
-          </div>
-
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {categories.map((category) => (
               <Button

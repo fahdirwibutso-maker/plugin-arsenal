@@ -12,13 +12,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 interface HeaderProps {
   cartItemCount?: number;
   isWholesale?: boolean;
-  onWholesaleToggle?: (value: boolean) => void;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
 }
@@ -26,7 +24,6 @@ interface HeaderProps {
 const Header = ({ 
   cartItemCount = 0, 
   isWholesale = false, 
-  onWholesaleToggle,
   searchQuery = "",
   onSearchChange 
 }: HeaderProps) => {
@@ -46,9 +43,7 @@ const Header = ({
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        setTimeout(() => {
-          fetchUsername(session.user.id);
-        }, 0);
+        setTimeout(() => fetchUsername(session.user.id), 0);
       } else {
         setUsername("");
       }
@@ -63,10 +58,7 @@ const Header = ({
       .select('username')
       .eq('user_id', userId)
       .single();
-    
-    if (data) {
-      setUsername(data.username);
-    }
+    if (data) setUsername(data.username);
   };
 
   const handleLogout = async () => {
@@ -84,15 +76,13 @@ const Header = ({
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        {/* Logo and Desktop Navigation */}
-        <div className="flex items-center gap-8">
+      <div className="container flex h-14 sm:h-16 items-center justify-between">
+        <div className="flex items-center gap-4 sm:gap-8">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent" />
-            <span className="text-xl font-bold text-foreground">Wellar<span className="text-primary">Shop</span></span>
+            <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-gradient-to-br from-primary to-accent" />
+            <span className="text-lg sm:text-xl font-bold text-foreground">Wellar<span className="text-primary">Shop</span></span>
           </Link>
           
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex gap-6">
             {navLinks.map((link) => (
               <Link 
@@ -106,24 +96,15 @@ const Header = ({
           </nav>
         </div>
         
-        {/* Right Side Actions */}
-        <div className="flex items-center gap-3">
-          {/* Wholesale/Retail Toggle */}
-          <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border">
-            <Label htmlFor="wholesale-mode" className="text-sm font-medium flex items-center gap-1.5 cursor-pointer">
-              <Package className="h-4 w-4 text-primary" />
-              <span className={!isWholesale ? "text-muted-foreground" : ""}>Retail</span>
-            </Label>
-            <Switch 
-              id="wholesale-mode" 
-              checked={isWholesale}
-              onCheckedChange={onWholesaleToggle}
-            />
-            <span className={isWholesale ? "text-primary font-semibold" : "text-muted-foreground"}>
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Wholesale Badge */}
+          {isWholesale && (
+            <Badge variant="default" className="hidden sm:flex items-center gap-1 text-xs">
+              <Package className="h-3 w-3" />
               Wholesale
-            </span>
-          </div>
-          
+            </Badge>
+          )}
+
           {/* Search Bar - Desktop */}
           <div className="hidden md:flex items-center gap-2">
             <SearchAutocomplete
@@ -135,31 +116,31 @@ const Header = ({
           
           {/* User Account */}
           {user && username ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <Link to="/orders">
-                <Button variant="ghost" size="icon" title="My Orders">
-                  <Package className="h-5 w-5" />
+                <Button variant="ghost" size="icon" title="My Orders" className="h-8 w-8 sm:h-9 sm:w-9">
+                  <Package className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
-              <span className="text-sm font-medium hidden sm:inline">{username}</span>
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">{username}</span>
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-xs sm:text-sm h-8 sm:h-9">
                 Logout
               </Button>
             </div>
           ) : (
             <Link to="/auth">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9">
+                <User className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
           )}
           
           {/* Cart */}
           <Link to="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="relative h-8 w-8 sm:h-9 sm:w-9">
+              <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5" />
               {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-semibold">
+                <span className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-primary text-primary-foreground text-[10px] sm:text-xs flex items-center justify-center font-semibold">
                   {cartItemCount}
                 </span>
               )}
@@ -169,8 +150,8 @@ const Header = ({
           {/* Mobile Menu */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9">
+                <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </SheetTrigger>
             <SheetContent>
@@ -195,22 +176,14 @@ const Header = ({
                     className="w-full"
                   />
                 </div>
-                <div className="pt-4 border-t border-border">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="wholesale-mode-mobile" className="text-sm font-medium flex items-center gap-2">
+                {isWholesale && (
+                  <div className="pt-4 border-t border-border">
+                    <div className="flex items-center gap-2 p-3 rounded-lg bg-primary/10 border border-primary/20">
                       <Package className="h-4 w-4 text-primary" />
-                      Wholesale Mode
-                    </Label>
-                    <Switch 
-                      id="wholesale-mode-mobile" 
-                      checked={isWholesale}
-                      onCheckedChange={onWholesaleToggle}
-                    />
+                      <span className="text-sm font-semibold text-primary">Wholesale Account Active</span>
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {isWholesale ? "Bulk pricing active" : "Retail pricing active"}
-                  </p>
-                </div>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

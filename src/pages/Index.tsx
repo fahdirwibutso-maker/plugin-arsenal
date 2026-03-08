@@ -10,9 +10,10 @@ import supermarket3 from "@/assets/supermarket-3.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { useCartCount } from "@/hooks/useCartCount";
+import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 
 const Index = () => {
-  const [isWholesale, setIsWholesale] = useState(false);
+  const { isWholesale } = useWholesaleStatus();
   const [searchQuery, setSearchQuery] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [supermarket1, supermarket2, supermarket3];
@@ -43,7 +44,6 @@ const Index = () => {
       <Header 
         cartItemCount={cartItemCount} 
         isWholesale={isWholesale}
-        onWholesaleToggle={setIsWholesale}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
@@ -85,9 +85,6 @@ const Index = () => {
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Button>
               </Link>
-              <Button size="sm" variant="outline" className="text-[10px] sm:text-xs h-7 sm:h-8 px-3 sm:px-4" onClick={() => setIsWholesale(true)}>
-                Wholesale Pricing
-              </Button>
             </div>
           </div>
         </div>
@@ -127,6 +124,15 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Wholesale Banner */}
+      {isWholesale && (
+        <section className="py-3 bg-primary/10 border-b border-primary/20">
+          <div className="container px-4 sm:px-6 text-center">
+            <p className="text-sm font-semibold text-primary">🏪 Wholesale Account Active — You're seeing bulk pricing</p>
+          </div>
+        </section>
+      )}
 
       {/* Featured Products */}
       <section className="py-8 sm:py-12 md:py-16">
