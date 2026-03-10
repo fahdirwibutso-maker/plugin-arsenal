@@ -22,6 +22,13 @@ const Shop = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { count: cartItemCount } = useCartCount();
   const { isWholesale } = useWholesaleStatus();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    sb.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session?.user));
+    const { data: { subscription } } = sb.auth.onAuthStateChange((_e, session) => setIsLoggedIn(!!session?.user));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
