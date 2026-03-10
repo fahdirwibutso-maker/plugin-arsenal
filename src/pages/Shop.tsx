@@ -90,6 +90,13 @@ const Shop = () => {
           </div>
         </div>
 
+        {/* Wholesale Application Form for non-wholesale logged-in users */}
+        {isLoggedIn && !isWholesale && (
+          <div className="mb-4 sm:mb-6 max-w-md">
+            <WholesaleApplicationForm />
+          </div>
+        )}
+
         <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {categories.map((category) => (
