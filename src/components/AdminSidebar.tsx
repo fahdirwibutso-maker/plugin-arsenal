@@ -5,6 +5,7 @@ import {
   Users,
   ShoppingCart,
   Home,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sidebar,
