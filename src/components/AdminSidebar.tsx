@@ -24,6 +24,7 @@ const menuItems = [
   { title: "Products", url: "/admin/products", icon: Package },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Orders", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Wholesale Apps", url: "/admin/wholesale-applications", icon: ClipboardList },
 ];
 
 export function AdminSidebar() {
