@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartCount } from "@/hooks/useCartCount";
 import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
+import WholesaleApplicationForm from "@/components/WholesaleApplicationForm";
+import { supabase as sb } from "@/integrations/supabase/client";
 
 const categories = [
   "All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery",
@@ -20,6 +22,13 @@ const Shop = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { count: cartItemCount } = useCartCount();
   const { isWholesale } = useWholesaleStatus();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    sb.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session?.user));
+    const { data: { subscription } } = sb.auth.onAuthStateChange((_e, session) => setIsLoggedIn(!!session?.user));
+    return () => subscription.unsubscribe();
+  }, []);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products"],
@@ -80,6 +89,13 @@ const Shop = () => {
             )}
           </div>
         </div>
+
+        {/* Wholesale Application Form for non-wholesale logged-in users */}
+        {isLoggedIn && !isWholesale && (
+          <div className="mb-4 sm:mb-6 max-w-md">
+            <WholesaleApplicationForm />
+          </div>
+        )}
 
         <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6 md:mb-8">
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
