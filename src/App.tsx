@@ -22,6 +22,7 @@ import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
 import { useOrderNotifications } from "./hooks/useOrderNotifications";
 import { useAdminWholesaleNotifications } from "./hooks/useAdminWholesaleNotifications";
+import { useRealtimeProducts } from "./hooks/useRealtimeProducts";
 import BottomNav from "./components/BottomNav";
 import { useCartCount } from "./hooks/useCartCount";
 
