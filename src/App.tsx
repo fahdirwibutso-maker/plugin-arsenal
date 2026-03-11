@@ -40,6 +40,7 @@ const queryClient = new QueryClient({
 function AppContent() {
   useOrderNotifications();
   useAdminWholesaleNotifications();
+  useRealtimeProducts();
   const { count: cartCount } = useCartCount();
 
   return (
