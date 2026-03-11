@@ -21,6 +21,7 @@ import AdminWholesaleApplications from "./pages/admin/WholesaleApplications";
 import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
 import { useOrderNotifications } from "./hooks/useOrderNotifications";
+import { useAdminWholesaleNotifications } from "./hooks/useAdminWholesaleNotifications";
 import BottomNav from "./components/BottomNav";
 import { useCartCount } from "./hooks/useCartCount";
 
@@ -28,6 +29,7 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   useOrderNotifications();
+  useAdminWholesaleNotifications();
   const { count: cartCount } = useCartCount();
 
   return (
