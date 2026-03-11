@@ -69,19 +69,29 @@ const Products = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (product: any) => {
-      // Delete image from storage first
       if (product.image) {
         await deleteImage(product.image);
       }
       const { error } = await supabase.from("products").delete().eq("id", product.id);
       if (error) throw error;
     },
+    onMutate: async (product: any) => {
+      await queryClient.cancelQueries({ queryKey: ["admin-products"] });
+      const previous = queryClient.getQueryData(["admin-products"]);
+      queryClient.setQueryData(["admin-products"], (old: any[]) =>
+        old?.filter((p) => p.id !== product.id) ?? []
+      );
+      return { previous };
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-products"] });
       queryClient.invalidateQueries({ queryKey: ["admin-product-count"] });
       toast.success("Product deleted successfully");
     },
-    onError: (err: any) => toast.error(err.message || "Failed to delete product"),
+    onError: (err: any, _v, context: any) => {
+      if (context?.previous) queryClient.setQueryData(["admin-products"], context.previous);
+      toast.error(err.message || "Failed to delete product");
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["admin-products"] }),
   });
 
   const saveMutation = useMutation({

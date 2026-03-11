@@ -22,14 +22,25 @@ import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
 import { useOrderNotifications } from "./hooks/useOrderNotifications";
 import { useAdminWholesaleNotifications } from "./hooks/useAdminWholesaleNotifications";
+import { useRealtimeProducts } from "./hooks/useRealtimeProducts";
 import BottomNav from "./components/BottomNav";
 import { useCartCount } from "./hooks/useCartCount";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 30,
+      gcTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: true,
+      retry: 1,
+    },
+  },
+});
 
 function AppContent() {
   useOrderNotifications();
   useAdminWholesaleNotifications();
+  useRealtimeProducts();
   const { count: cartCount } = useCartCount();
 
   return (
