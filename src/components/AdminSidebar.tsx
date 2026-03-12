@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   Home,
   ClipboardList,
+  Calculator,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,6 +26,7 @@ const menuItems = [
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Orders", url: "/admin/orders", icon: ShoppingCart },
   { title: "Wholesale Apps", url: "/admin/wholesale-applications", icon: ClipboardList },
+  { title: "Accounting", url: "/admin/accounting", icon: Calculator },
 ];
 
 export function AdminSidebar() {
