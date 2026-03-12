@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   Home,
   ClipboardList,
+  Calculator,
 } from "lucide-react";
 import {
   Sidebar,
