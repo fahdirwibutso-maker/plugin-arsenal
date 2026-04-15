@@ -11,7 +11,7 @@ const navItems = [
   { icon: Store, label: "Shop", path: "/shop" },
   { icon: ShoppingCart, label: "Cart", path: "/cart", showBadge: true },
   { icon: Package, label: "Orders", path: "/orders" },
-  { icon: User, label: "Account", path: "/auth" },
+  { icon: User, label: "Account", path: "/profile" },
 ];
 
 const BottomNav = ({ cartItemCount = 0 }: BottomNavProps) => {
