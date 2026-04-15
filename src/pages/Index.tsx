@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Truck, Shield, CreditCard } from "lucide-react";
+import Footer from "@/components/Footer";
 import supermarket1 from "@/assets/supermarket-1.jpg";
 import supermarket2 from "@/assets/supermarket-2.jpg";
 import supermarket3 from "@/assets/supermarket-3.jpg";
@@ -185,6 +186,8 @@ const Index = () => {
           </Link>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };
