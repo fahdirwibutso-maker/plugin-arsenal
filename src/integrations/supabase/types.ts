@@ -53,6 +53,33 @@ export type Database = {
         }
         Relationships: []
       }
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       expenses: {
         Row: {
           amount: number
@@ -82,6 +109,180 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      hotel_staff: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          first_name: string
+          hire_date: string | null
+          id: string
+          is_active: boolean | null
+          last_name: string
+          phone: string | null
+          role: Database["public"]["Enums"]["staff_role"]
+          salary: number | null
+          shift: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          first_name: string
+          hire_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_name: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["staff_role"]
+          salary?: number | null
+          shift?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          first_name?: string
+          hire_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_name?: string
+          phone?: string | null
+          role?: Database["public"]["Enums"]["staff_role"]
+          salary?: number | null
+          shift?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      hotel_staff_shifts: {
+        Row: {
+          available_rooms: number | null
+          bar_sales: Json | null
+          closed_at: string | null
+          closing_balance: number
+          completed_orders: number | null
+          created_at: string | null
+          expenses_notes: string | null
+          expenses_total: number
+          id: string
+          kitchen_sales: Json | null
+          occupied_rooms: number | null
+          opened_at: string
+          opening_balance: number
+          pending_check_ins: number | null
+          pending_orders: number | null
+          product_usage: string | null
+          revenue_billed: number | null
+          revenue_pending: number | null
+          shift_check_ins: number | null
+          shift_check_outs: number | null
+          shift_duration: string | null
+          shift_notes: string | null
+          staff_id: string | null
+          total_bank: number
+          total_card: number
+          total_cash: number
+          total_sales: number
+          total_upi: number
+          transfer_notes: string | null
+          transfer_to_staff_id: string | null
+          transferred_orders_count: number
+          unpaid_details: string | null
+          unpaid_total: number
+          updated_at: string | null
+        }
+        Insert: {
+          available_rooms?: number | null
+          bar_sales?: Json | null
+          closed_at?: string | null
+          closing_balance?: number
+          completed_orders?: number | null
+          created_at?: string | null
+          expenses_notes?: string | null
+          expenses_total?: number
+          id?: string
+          kitchen_sales?: Json | null
+          occupied_rooms?: number | null
+          opened_at?: string
+          opening_balance?: number
+          pending_check_ins?: number | null
+          pending_orders?: number | null
+          product_usage?: string | null
+          revenue_billed?: number | null
+          revenue_pending?: number | null
+          shift_check_ins?: number | null
+          shift_check_outs?: number | null
+          shift_duration?: string | null
+          shift_notes?: string | null
+          staff_id?: string | null
+          total_bank?: number
+          total_card?: number
+          total_cash?: number
+          total_sales?: number
+          total_upi?: number
+          transfer_notes?: string | null
+          transfer_to_staff_id?: string | null
+          transferred_orders_count?: number
+          unpaid_details?: string | null
+          unpaid_total?: number
+          updated_at?: string | null
+        }
+        Update: {
+          available_rooms?: number | null
+          bar_sales?: Json | null
+          closed_at?: string | null
+          closing_balance?: number
+          completed_orders?: number | null
+          created_at?: string | null
+          expenses_notes?: string | null
+          expenses_total?: number
+          id?: string
+          kitchen_sales?: Json | null
+          occupied_rooms?: number | null
+          opened_at?: string
+          opening_balance?: number
+          pending_check_ins?: number | null
+          pending_orders?: number | null
+          product_usage?: string | null
+          revenue_billed?: number | null
+          revenue_pending?: number | null
+          shift_check_ins?: number | null
+          shift_check_outs?: number | null
+          shift_duration?: string | null
+          shift_notes?: string | null
+          staff_id?: string | null
+          total_bank?: number
+          total_card?: number
+          total_cash?: number
+          total_sales?: number
+          total_upi?: number
+          transfer_notes?: string | null
+          transfer_to_staff_id?: string | null
+          transferred_orders_count?: number
+          unpaid_details?: string | null
+          unpaid_total?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hotel_staff_shifts_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "hotel_staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hotel_staff_shifts_transfer_to_staff_id_fkey"
+            columns: ["transfer_to_staff_id"]
+            isOneToOne: false
+            referencedRelation: "hotel_staff"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {
@@ -222,6 +423,7 @@ export type Database = {
           id: string
           image: string
           is_active: boolean
+          is_hot: boolean | null
           min_wholesale_qty: number | null
           name: string
           price: number
@@ -237,6 +439,7 @@ export type Database = {
           id?: string
           image?: string
           is_active?: boolean
+          is_hot?: boolean | null
           min_wholesale_qty?: number | null
           name: string
           price: number
@@ -252,6 +455,7 @@ export type Database = {
           id?: string
           image?: string
           is_active?: boolean
+          is_hot?: boolean | null
           min_wholesale_qty?: number | null
           name?: string
           price?: number
@@ -289,6 +493,33 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string
+        }
+        Relationships: []
+      }
+      units: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -413,6 +644,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_admin_dashboard_stats: {
+        Args: never
+        Returns: {
+          order_count: number
+          product_count: number
+          total_revenue: number
+          user_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -423,6 +663,15 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
+      staff_role:
+        | "manager"
+        | "receptionist"
+        | "housekeeping"
+        | "security"
+        | "maintenance"
+        | "waiter"
+        | "chef"
+        | "barman"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -551,6 +800,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
+      staff_role: [
+        "manager",
+        "receptionist",
+        "housekeeping",
+        "security",
+        "maintenance",
+        "waiter",
+        "chef",
+        "barman",
+      ],
     },
   },
 } as const
