@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCartCount } from "@/hooks/useCartCount";
 import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
+import Footer from "@/components/Footer";
 import WholesaleApplicationForm from "@/components/WholesaleApplicationForm";
 import { supabase as sb } from "@/integrations/supabase/client";
 
@@ -150,6 +151,7 @@ const Shop = () => {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 };
