@@ -123,6 +123,7 @@ const Checkout = () => {
 
     setPlacing(true);
 
+    let orderId = "";
     try {
       if (isGuest) {
         try {
