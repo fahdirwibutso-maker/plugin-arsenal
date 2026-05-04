@@ -1,109 +1,299 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AdminLayout } from "@/components/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { ChevronDown, ChevronUp, Package, MapPin, CreditCard, Eye } from "lucide-react";
+import { format } from "date-fns";
+
+interface OrderItem {
+  id: string;
+  product_name: string;
+  product_image: string;
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+}
+
+interface Order {
+  id: string;
+  user_id: string;
+  total: number;
+  status: string;
+  phone_number: string | null;
+  shipping_address: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+const statusColors: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
+  pending: "outline",
+  confirmed: "secondary",
+  processing: "secondary",
+  shipped: "default",
+  delivered: "default",
+  cancelled: "destructive",
+};
+
+const ORDER_STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
 const Orders = () => {
-  const [retailOrders] = useState([
-    { id: 1001, customer: "John Doe", items: 3, total: 125.99, status: "Pending", date: "2024-01-15" },
-    { id: 1002, customer: "Jane Smith", items: 2, total: 89.99, status: "Completed", date: "2024-01-14" },
-    { id: 1003, customer: "Bob Wilson", items: 5, total: 234.50, status: "Shipping", date: "2024-01-13" },
-  ]);
+  const queryClient = useQueryClient();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
-  const [wholesaleOrders] = useState([
-    { id: 2001, customer: "ABC Store", items: 50, total: 2500.00, status: "Pending", date: "2024-01-15" },
-    { id: 2002, customer: "XYZ Market", items: 75, total: 3750.00, status: "Completed", date: "2024-01-12" },
-    { id: 2003, customer: "Quick Shop", items: 100, total: 5000.00, status: "Processing", date: "2024-01-10" },
-  ]);
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ["admin-orders"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as Order[];
+    },
+  });
 
-  const updateStatus = (orderId: number, type: string) => {
-    toast.success(`${type} order #${orderId} status updated`);
+  const { data: orderItems = [] } = useQuery({
+    queryKey: ["admin-order-items", selectedOrder?.id],
+    enabled: !!selectedOrder,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("order_items")
+        .select("*")
+        .eq("order_id", selectedOrder!.id);
+      if (error) throw error;
+      return data as OrderItem[];
+    },
+  });
+
+  const { data: payment } = useQuery({
+    queryKey: ["admin-order-payment", selectedOrder?.id],
+    enabled: !!selectedOrder,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payments")
+        .select("*")
+        .eq("order_id", selectedOrder!.id)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: customerProfile } = useQuery({
+    queryKey: ["admin-order-customer", selectedOrder?.user_id],
+    enabled: !!selectedOrder?.user_id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("username, phone_number")
+        .eq("user_id", selectedOrder!.user_id)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ orderId, status }: { orderId: string; status: string }) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ status })
+        .eq("id", orderId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast.success("Order status updated");
+    },
+    onError: () => toast.error("Failed to update order status"),
+  });
+
+  const openDetail = (order: Order) => {
+    setSelectedOrder(order);
+    setDetailOpen(true);
   };
-
-  const OrderTable = ({ orders, type }: { orders: any[]; type: string }) => (
-    <div className="overflow-x-auto">
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Order ID</TableHead>
-          <TableHead>Customer</TableHead>
-          <TableHead className="hidden sm:table-cell">Items</TableHead>
-          <TableHead>Total</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="hidden md:table-cell">Date</TableHead>
-          <TableHead>Actions</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {orders.map((order) => (
-          <TableRow key={order.id}>
-            <TableCell className="font-medium text-xs sm:text-sm">#{order.id}</TableCell>
-            <TableCell className="text-xs sm:text-sm">{order.customer}</TableCell>
-            <TableCell className="hidden sm:table-cell">{order.items}</TableCell>
-            <TableCell className="text-xs sm:text-sm">{order.total.toFixed(0)} FRw</TableCell>
-            <TableCell>
-              <Badge
-                variant={
-                  order.status === "Completed"
-                    ? "default"
-                    : order.status === "Pending"
-                    ? "outline"
-                    : "secondary"
-                }
-              >
-                {order.status}
-              </Badge>
-            </TableCell>
-            <TableCell className="hidden md:table-cell">{order.date}</TableCell>
-            <TableCell>
-              <Button variant="outline" size="sm" onClick={() => updateStatus(order.id, type)}>
-                Update
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-      </Table>
-    </div>
-  );
 
   return (
     <AdminLayout>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Order Management</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6">Order Management</h1>
 
-        <Tabs defaultValue="retail" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="retail">Retail Orders</TabsTrigger>
-            <TabsTrigger value="wholesale">Wholesale Orders</TabsTrigger>
-          </TabsList>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              All Orders ({orders.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {isLoading ? (
+              <div className="space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full" />
+                ))}
+              </div>
+            ) : orders.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">No orders yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Order #</TableHead>
+                      <TableHead className="hidden sm:table-cell">Date</TableHead>
+                      <TableHead>Total</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="hidden md:table-cell">Phone</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {orders.map((order) => (
+                      <TableRow key={order.id}>
+                        <TableCell className="font-mono text-xs">
+                          {order.id.slice(0, 8).toUpperCase()}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell text-xs text-muted-foreground">
+                          {format(new Date(order.created_at), "MMM d, yyyy HH:mm")}
+                        </TableCell>
+                        <TableCell className="font-semibold text-sm">
+                          {Number(order.total).toLocaleString()} FRw
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={order.status}
+                            onValueChange={(value) =>
+                              updateStatusMutation.mutate({ orderId: order.id, status: value })
+                            }
+                          >
+                            <SelectTrigger className="w-[120px] h-8 text-xs">
+                              <Badge variant={statusColors[order.status] || "outline"} className="text-[10px]">
+                                {order.status}
+                              </Badge>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {ORDER_STATUSES.map((s) => (
+                                <SelectItem key={s} value={s} className="capitalize">
+                                  {s}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
+                          {order.phone_number || "—"}
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="ghost" size="sm" onClick={() => openDetail(order)}>
+                            <Eye className="h-4 w-4 mr-1" /> View
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-          <TabsContent value="retail">
-            <Card>
-              <CardHeader>
-                <CardTitle>Retail Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <OrderTable orders={retailOrders} type="Retail" />
-              </CardContent>
-            </Card>
-          </TabsContent>
+        {/* Order Detail Dialog */}
+        <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Order #{selectedOrder?.id.slice(0, 8).toUpperCase()}
+              </DialogTitle>
+            </DialogHeader>
 
-          <TabsContent value="wholesale">
-            <Card>
-              <CardHeader>
-                <CardTitle>Wholesale Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <OrderTable orders={wholesaleOrders} type="Wholesale" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            {selectedOrder && (
+              <div className="space-y-5">
+                {/* Customer Info */}
+                <div>
+                  <h3 className="font-semibold text-sm mb-2 flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-primary" /> Customer & Shipping
+                  </h3>
+                  <div className="text-sm space-y-1 bg-muted/50 rounded-lg p-3">
+                    <p><span className="text-muted-foreground">Name:</span> {customerProfile?.username || "—"}</p>
+                    <p><span className="text-muted-foreground">Phone:</span> {selectedOrder.phone_number || customerProfile?.phone_number || "—"}</p>
+                    <p><span className="text-muted-foreground">Address:</span> {selectedOrder.shipping_address || "—"}</p>
+                    <p><span className="text-muted-foreground">Ordered:</span> {format(new Date(selectedOrder.created_at), "PPpp")}</p>
+                  </div>
+                </div>
+
+                {/* Line Items */}
+                <div>
+                  <h3 className="font-semibold text-sm mb-2">Items</h3>
+                  <div className="space-y-2">
+                    {orderItems.map((item) => (
+                      <div key={item.id} className="flex items-center gap-3 bg-muted/50 rounded-lg p-2">
+                        <img
+                          src={item.product_image}
+                          alt={item.product_name}
+                          className="w-10 h-10 rounded object-cover flex-shrink-0"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{item.product_name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {Number(item.unit_price).toLocaleString()} FRw × {item.quantity}
+                          </p>
+                        </div>
+                        <p className="text-sm font-semibold flex-shrink-0">
+                          {Number(item.total_price).toLocaleString()} FRw
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Payment State */}
+                <div>
+                  <h3 className="font-semibold text-sm mb-2 flex items-center gap-1.5">
+                    <CreditCard className="h-4 w-4 text-primary" /> Payment
+                  </h3>
+                  <div className="text-sm space-y-1 bg-muted/50 rounded-lg p-3">
+                    {payment ? (
+                      <>
+                        <p><span className="text-muted-foreground">Method:</span> {payment.method}</p>
+                        <p><span className="text-muted-foreground">Amount:</span> {Number(payment.amount).toLocaleString()} FRw</p>
+                        <p>
+                          <span className="text-muted-foreground">Status:</span>{" "}
+                          <Badge variant={payment.status === "completed" ? "default" : "outline"} className="text-[10px]">
+                            {payment.status}
+                          </Badge>
+                        </p>
+                        {payment.transaction_ref && (
+                          <p><span className="text-muted-foreground">Ref:</span> {payment.transaction_ref}</p>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-muted-foreground">No payment recorded yet</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="flex justify-between items-center border-t pt-3">
+                  <span className="font-bold">Total</span>
+                  <span className="text-lg font-bold text-primary">
+                    {Number(selectedOrder.total).toLocaleString()} FRw
+                  </span>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );
