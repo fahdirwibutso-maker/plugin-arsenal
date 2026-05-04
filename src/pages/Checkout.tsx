@@ -123,6 +123,7 @@ const Checkout = () => {
 
     setPlacing(true);
 
+    let orderId = "";
     try {
       if (isGuest) {
         try {
@@ -176,7 +177,8 @@ const Checkout = () => {
 
           if (dbCart) setCartItems(dbCart as CartItem[]);
 
-          await createOrder(authData.user.id);
+          const guestOrderId = await createOrder(authData.user.id);
+          orderId = guestOrderId;
         }
       } else {
         const { data: { user } } = await supabase.auth.getUser();
@@ -185,14 +187,14 @@ const Checkout = () => {
           setPlacing(false);
           return;
         }
-        await createOrder(user.id);
+        orderId = await createOrder(user.id);
       }
 
       toast({
         title: "Order placed successfully! 🎉",
         description: "You will be contacted for delivery.",
       });
-      navigate("/shop");
+      navigate(`/order-confirmation?order=${orderId}`);
     } catch (err: any) {
       toast({ title: "Order failed", description: err.message, variant: "destructive" });
     } finally {
