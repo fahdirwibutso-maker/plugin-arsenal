@@ -24,7 +24,10 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
   const unitLower = unit.toLowerCase();
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
   const canWholesale = wholesalePrice != null && wholesalePrice > 0;
-  const displayPrice = isWholesale && canWholesale ? wholesalePrice! : price;
+  const useWholesalePricing = isWholesale && canWholesale;
+  const displayPrice = useWholesalePricing ? wholesalePrice! : price;
+  const pricingType: "retail" | "wholesale" = useWholesalePricing ? "wholesale" : "retail";
+  const lineMinQty = useWholesalePricing && !isBulkUnit ? (minWholesaleQty || 10) : null;
   const { toast } = useToast();
 
   const handleAddToCart = async () => {
