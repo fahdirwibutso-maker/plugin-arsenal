@@ -20,6 +20,7 @@ interface OrderItem {
   quantity: number;
   unit_price: number;
   total_price: number;
+  pricing_type?: "retail" | "wholesale";
 }
 
 interface Order {
@@ -32,6 +33,7 @@ interface Order {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  order_type?: "retail" | "wholesale" | "mixed";
 }
 
 const statusColors: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
