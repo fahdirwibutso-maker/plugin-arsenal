@@ -281,7 +281,15 @@ const Orders = () => {
                           className="w-10 h-10 rounded object-cover flex-shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{item.product_name}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-sm font-medium truncate">{item.product_name}</p>
+                            <Badge
+                              variant={item.pricing_type === "wholesale" ? "default" : "secondary"}
+                              className="text-[9px] capitalize"
+                            >
+                              {item.pricing_type || "retail"}
+                            </Badge>
+                          </div>
                           <p className="text-xs text-muted-foreground">
                             {Number(item.unit_price).toLocaleString()} FRw × {item.quantity}
                           </p>
