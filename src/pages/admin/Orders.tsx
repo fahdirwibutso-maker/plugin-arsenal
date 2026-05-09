@@ -243,9 +243,14 @@ const Orders = () => {
         <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
+              <DialogTitle className="flex items-center gap-2 flex-wrap">
                 <Package className="h-5 w-5" />
-                Order #{selectedOrder?.id.slice(0, 8).toUpperCase()}
+                <span>Order #{selectedOrder?.id.slice(0, 8).toUpperCase()}</span>
+                {selectedOrder?.order_type && (
+                  <Badge variant={orderTypeColors[selectedOrder.order_type]} className="text-[10px] capitalize">
+                    {selectedOrder.order_type}
+                  </Badge>
+                )}
               </DialogTitle>
             </DialogHeader>
 
