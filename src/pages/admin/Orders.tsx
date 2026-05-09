@@ -139,10 +139,25 @@ const Orders = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Package className="h-5 w-5" />
-              All Orders ({orders.length})
-            </CardTitle>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                All Orders ({orders.filter((o) => typeFilter === "all" || (o.order_type || "retail") === typeFilter).length})
+              </CardTitle>
+              <div className="flex flex-wrap gap-1.5">
+                {(["all", "retail", "wholesale", "mixed"] as const).map((t) => (
+                  <Button
+                    key={t}
+                    size="sm"
+                    variant={typeFilter === t ? "default" : "outline"}
+                    className="h-7 px-2.5 text-xs capitalize"
+                    onClick={() => setTypeFilter(t)}
+                  >
+                    {t}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
