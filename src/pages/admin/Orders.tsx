@@ -175,6 +175,7 @@ const Orders = () => {
                     <TableRow>
                       <TableHead>Order #</TableHead>
                       <TableHead className="hidden sm:table-cell">Date</TableHead>
+                      <TableHead>Type</TableHead>
                       <TableHead>Total</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="hidden md:table-cell">Phone</TableHead>
@@ -182,13 +183,20 @@ const Orders = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {orders.map((order) => (
+                    {orders
+                      .filter((o) => typeFilter === "all" || (o.order_type || "retail") === typeFilter)
+                      .map((order) => (
                       <TableRow key={order.id}>
                         <TableCell className="font-mono text-xs">
                           {order.id.slice(0, 8).toUpperCase()}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-xs text-muted-foreground">
                           {format(new Date(order.created_at), "MMM d, yyyy HH:mm")}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={orderTypeColors[order.order_type || "retail"]} className="text-[10px] capitalize">
+                            {order.order_type || "retail"}
+                          </Badge>
                         </TableCell>
                         <TableCell className="font-semibold text-sm">
                           {Number(order.total).toLocaleString()} FRw
