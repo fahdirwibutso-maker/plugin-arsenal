@@ -18,6 +18,8 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          min_wholesale_qty: number | null
+          pricing_type: string
           product_id: string
           product_image: string
           product_name: string
@@ -30,6 +32,8 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          min_wholesale_qty?: number | null
+          pricing_type?: string
           product_id: string
           product_image: string
           product_name: string
@@ -42,6 +46,8 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          min_wholesale_qty?: number | null
+          pricing_type?: string
           product_id?: string
           product_image?: string
           product_name?: string
@@ -289,6 +295,7 @@ export type Database = {
           created_at: string
           id: string
           order_id: string
+          pricing_type: string
           product_id: string | null
           product_image: string
           product_name: string
@@ -300,6 +307,7 @@ export type Database = {
           created_at?: string
           id?: string
           order_id: string
+          pricing_type?: string
           product_id?: string | null
           product_image?: string
           product_name: string
@@ -311,6 +319,7 @@ export type Database = {
           created_at?: string
           id?: string
           order_id?: string
+          pricing_type?: string
           product_id?: string | null
           product_image?: string
           product_name?: string
@@ -340,6 +349,7 @@ export type Database = {
           created_at: string
           id: string
           notes: string | null
+          order_type: string
           phone_number: string | null
           shipping_address: string | null
           status: string
@@ -351,6 +361,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          order_type?: string
           phone_number?: string | null
           shipping_address?: string | null
           status?: string
@@ -362,6 +373,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          order_type?: string
           phone_number?: string | null
           shipping_address?: string | null
           status?: string

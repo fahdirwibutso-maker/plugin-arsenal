@@ -20,6 +20,7 @@ interface OrderItem {
   quantity: number;
   unit_price: number;
   total_price: number;
+  pricing_type?: "retail" | "wholesale";
 }
 
 interface Order {
@@ -32,6 +33,7 @@ interface Order {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  order_type?: "retail" | "wholesale" | "mixed";
 }
 
 const statusColors: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
@@ -45,10 +47,17 @@ const statusColors: Record<string, "default" | "secondary" | "outline" | "destru
 
 const ORDER_STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
+const orderTypeColors: Record<string, "default" | "secondary" | "outline"> = {
+  retail: "secondary",
+  wholesale: "default",
+  mixed: "outline",
+};
+
 const Orders = () => {
   const queryClient = useQueryClient();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<"all" | "retail" | "wholesale" | "mixed">("all");
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
@@ -130,10 +139,25 @@ const Orders = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Package className="h-5 w-5" />
-              All Orders ({orders.length})
-            </CardTitle>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                All Orders ({orders.filter((o) => typeFilter === "all" || (o.order_type || "retail") === typeFilter).length})
+              </CardTitle>
+              <div className="flex flex-wrap gap-1.5">
+                {(["all", "retail", "wholesale", "mixed"] as const).map((t) => (
+                  <Button
+                    key={t}
+                    size="sm"
+                    variant={typeFilter === t ? "default" : "outline"}
+                    className="h-7 px-2.5 text-xs capitalize"
+                    onClick={() => setTypeFilter(t)}
+                  >
+                    {t}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             {isLoading ? (
@@ -151,6 +175,7 @@ const Orders = () => {
                     <TableRow>
                       <TableHead>Order #</TableHead>
                       <TableHead className="hidden sm:table-cell">Date</TableHead>
+                      <TableHead>Type</TableHead>
                       <TableHead>Total</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="hidden md:table-cell">Phone</TableHead>
@@ -158,13 +183,20 @@ const Orders = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {orders.map((order) => (
+                    {orders
+                      .filter((o) => typeFilter === "all" || (o.order_type || "retail") === typeFilter)
+                      .map((order) => (
                       <TableRow key={order.id}>
                         <TableCell className="font-mono text-xs">
                           {order.id.slice(0, 8).toUpperCase()}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-xs text-muted-foreground">
                           {format(new Date(order.created_at), "MMM d, yyyy HH:mm")}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={orderTypeColors[order.order_type || "retail"]} className="text-[10px] capitalize">
+                            {order.order_type || "retail"}
+                          </Badge>
                         </TableCell>
                         <TableCell className="font-semibold text-sm">
                           {Number(order.total).toLocaleString()} FRw
@@ -211,9 +243,14 @@ const Orders = () => {
         <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
+              <DialogTitle className="flex items-center gap-2 flex-wrap">
                 <Package className="h-5 w-5" />
-                Order #{selectedOrder?.id.slice(0, 8).toUpperCase()}
+                <span>Order #{selectedOrder?.id.slice(0, 8).toUpperCase()}</span>
+                {selectedOrder?.order_type && (
+                  <Badge variant={orderTypeColors[selectedOrder.order_type]} className="text-[10px] capitalize">
+                    {selectedOrder.order_type}
+                  </Badge>
+                )}
               </DialogTitle>
             </DialogHeader>
 
@@ -244,7 +281,15 @@ const Orders = () => {
                           className="w-10 h-10 rounded object-cover flex-shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium truncate">{item.product_name}</p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-sm font-medium truncate">{item.product_name}</p>
+                            <Badge
+                              variant={item.pricing_type === "wholesale" ? "default" : "secondary"}
+                              className="text-[9px] capitalize"
+                            >
+                              {item.pricing_type || "retail"}
+                            </Badge>
+                          </div>
                           <p className="text-xs text-muted-foreground">
                             {Number(item.unit_price).toLocaleString()} FRw × {item.quantity}
                           </p>

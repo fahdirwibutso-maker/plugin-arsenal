@@ -26,6 +26,8 @@ interface CartItem {
   product_price: number;
   product_image: string;
   quantity: number;
+  pricing_type?: "retail" | "wholesale";
+  min_wholesale_qty?: number | null;
 }
 
 const Checkout = () => {
@@ -77,18 +79,27 @@ const Checkout = () => {
   const shipping = subtotal > 50000 ? 0 : 2000;
   const total = subtotal + shipping;
 
-  const createOrder = async (userId: string) => {
+  const createOrder = async (userId: string, items: CartItem[]) => {
     const address = `${formData.address}, ${formData.city}`;
+
+    const hasWholesale = items.some((i) => i.pricing_type === "wholesale");
+    const hasRetail = items.some((i) => (i.pricing_type || "retail") === "retail");
+    const orderType = hasWholesale && hasRetail ? "mixed" : hasWholesale ? "wholesale" : "retail";
+
+    const orderSubtotal = items.reduce((s, i) => s + i.product_price * i.quantity, 0);
+    const orderShipping = orderSubtotal > 50000 ? 0 : 2000;
+    const orderTotal = orderSubtotal + orderShipping;
 
     // Create the order
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
         user_id: userId,
-        total,
+        total: orderTotal,
         phone_number: formData.phone || null,
         shipping_address: address,
         status: "pending",
+        order_type: orderType,
       })
       .select("id")
       .single();
@@ -96,7 +107,7 @@ const Checkout = () => {
     if (orderError) throw new Error(`Order failed: ${orderError.message}`);
 
     // Create order items
-    const orderItems = cartItems.map((item) => ({
+    const orderItems = items.map((item) => ({
       order_id: order.id,
       product_id: item.product_id,
       product_name: item.product_name,
@@ -104,6 +115,7 @@ const Checkout = () => {
       quantity: item.quantity,
       unit_price: item.product_price,
       total_price: item.product_price * item.quantity,
+      pricing_type: item.pricing_type || "retail",
     }));
 
     const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
@@ -118,6 +130,20 @@ const Checkout = () => {
   const handlePlaceOrder = async () => {
     if (cartItems.length === 0) {
       toast({ title: "Cart is empty", variant: "destructive" });
+      return;
+    }
+
+    // Enforce wholesale minimums per line
+    const violation = cartItems.find((i) => {
+      const min = i.min_wholesale_qty || 0;
+      return i.pricing_type === "wholesale" && min > 0 && i.quantity < min;
+    });
+    if (violation) {
+      toast({
+        title: "Wholesale minimum not met",
+        description: `${violation.product_name} requires at least ${violation.min_wholesale_qty} units at wholesale price.`,
+        variant: "destructive",
+      });
       return;
     }
 
@@ -165,6 +191,8 @@ const Checkout = () => {
               product_price: item.product_price,
               product_image: item.product_image || "",
               quantity: item.quantity,
+              pricing_type: item.pricing_type || "retail",
+              min_wholesale_qty: item.min_wholesale_qty ?? null,
             });
           }
           localStorage.removeItem("guestCart");
@@ -177,7 +205,7 @@ const Checkout = () => {
 
           if (dbCart) setCartItems(dbCart as CartItem[]);
 
-          const guestOrderId = await createOrder(authData.user.id);
+          const guestOrderId = await createOrder(authData.user.id, (dbCart as CartItem[]) || cartItems);
           orderId = guestOrderId;
         }
       } else {
@@ -187,7 +215,7 @@ const Checkout = () => {
           setPlacing(false);
           return;
         }
-        orderId = await createOrder(user.id);
+        orderId = await createOrder(user.id, cartItems);
       }
 
       toast({

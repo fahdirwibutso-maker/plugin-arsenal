@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Minus, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +17,8 @@ interface CartItem {
   product_image: string;
   quantity: number;
   size?: string;
+  pricing_type?: "retail" | "wholesale";
+  min_wholesale_qty?: number | null;
 }
 
 const Cart = () => {
@@ -41,7 +44,7 @@ const Cart = () => {
       .eq("user_id", user.id);
 
     if (!error && data) {
-      setCartItems(data);
+      setCartItems(data as CartItem[]);
     }
     setLoading(false);
   };
@@ -119,24 +122,36 @@ const Cart = () => {
         ) : (
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-4">
-              {cartItems.map((item) => (
+              {cartItems.map((item) => {
+                const isWholesaleLine = item.pricing_type === "wholesale";
+                const minQty = item.min_wholesale_qty || 0;
+                const belowMin = isWholesaleLine && minQty > 0 && item.quantity < minQty;
+                return (
                 <Card key={item.id} className="p-4">
                   <div className="flex gap-4">
                     <div className="w-24 h-24 bg-secondary rounded overflow-hidden flex-shrink-0">
                       <img src={item.product_image} alt={item.product_name} className="w-full h-full object-cover" />
                     </div>
-                    
+
                     <div className="flex-1">
                       <div className="flex justify-between mb-2">
                         <div>
                           <h3 className="font-semibold text-foreground">{item.product_name}</h3>
-                          {item.size && <p className="text-sm text-muted-foreground">Size: {item.size}</p>}
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge variant={isWholesaleLine ? "default" : "secondary"} className="text-[10px] capitalize">
+                              {item.pricing_type || "retail"}
+                            </Badge>
+                            {isWholesaleLine && minQty > 0 && (
+                              <span className="text-[10px] text-muted-foreground">Min {minQty} pcs</span>
+                            )}
+                          </div>
+                          {item.size && <p className="text-sm text-muted-foreground mt-1">Size: {item.size}</p>}
                         </div>
                         <Button variant="ghost" size="icon" className="text-destructive" onClick={() => removeItem(item.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
@@ -149,10 +164,17 @@ const Cart = () => {
                         </div>
                         <p className="text-lg font-bold text-primary">{(item.product_price * item.quantity).toLocaleString()} FRw</p>
                       </div>
+
+                      {belowMin && (
+                        <div className="mt-2 flex items-center gap-1.5 text-xs text-destructive">
+                          <AlertTriangle className="h-3.5 w-3.5" />
+                          <span>Wholesale minimum is {minQty}. Increase quantity to checkout.</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
-              ))}
+              );})}
             </div>
 
             <div>
