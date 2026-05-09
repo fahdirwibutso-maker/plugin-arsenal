@@ -34,15 +34,21 @@ const ProductDetail = () => {
   const unitLower = product?.unit?.toLowerCase() || "piece";
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
   const canWholesale = product?.wholesale_price != null && product.wholesale_price > 0;
-  const displayPrice = isWholesale && canWholesale ? product!.wholesale_price! : product?.price || 0;
+  const useWholesalePricing = isWholesale && canWholesale;
+  const displayPrice = useWholesalePricing ? product!.wholesale_price! : product?.price || 0;
+  const pricingType: "retail" | "wholesale" = useWholesalePricing ? "wholesale" : "retail";
+  const lineMinQty = useWholesalePricing && !isBulkUnit ? (product?.min_wholesale_qty || 10) : null;
 
   const handleAddToCart = async () => {
     if (!product) return;
     const { data: { user } } = await supabase.auth.getUser();
+    const initialQty = lineMinQty || 1;
 
     if (!user) {
       const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
-      const existingIndex = guestCart.findIndex((item: any) => item.product_id === product.id);
+      const existingIndex = guestCart.findIndex(
+        (item: any) => item.product_id === product.id && (item.pricing_type || "retail") === pricingType
+      );
       if (existingIndex >= 0) {
         guestCart[existingIndex].quantity += 1;
       } else {
@@ -51,7 +57,9 @@ const ProductDetail = () => {
           product_name: product.name,
           product_price: displayPrice,
           product_image: product.image,
-          quantity: 1,
+          quantity: initialQty,
+          pricing_type: pricingType,
+          min_wholesale_qty: lineMinQty,
         });
       }
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
@@ -65,6 +73,7 @@ const ProductDetail = () => {
       .select("*")
       .eq("user_id", user.id)
       .eq("product_id", product.id)
+      .eq("pricing_type", pricingType)
       .maybeSingle();
 
     if (existing) {
@@ -76,7 +85,9 @@ const ProductDetail = () => {
         product_name: product.name,
         product_price: displayPrice,
         product_image: product.image,
-        quantity: 1,
+        quantity: initialQty,
+        pricing_type: pricingType,
+        min_wholesale_qty: lineMinQty,
       });
     }
     window.dispatchEvent(new CustomEvent("cart-updated"));
