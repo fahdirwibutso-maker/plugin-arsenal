@@ -79,18 +79,27 @@ const Checkout = () => {
   const shipping = subtotal > 50000 ? 0 : 2000;
   const total = subtotal + shipping;
 
-  const createOrder = async (userId: string) => {
+  const createOrder = async (userId: string, items: CartItem[]) => {
     const address = `${formData.address}, ${formData.city}`;
+
+    const hasWholesale = items.some((i) => i.pricing_type === "wholesale");
+    const hasRetail = items.some((i) => (i.pricing_type || "retail") === "retail");
+    const orderType = hasWholesale && hasRetail ? "mixed" : hasWholesale ? "wholesale" : "retail";
+
+    const orderSubtotal = items.reduce((s, i) => s + i.product_price * i.quantity, 0);
+    const orderShipping = orderSubtotal > 50000 ? 0 : 2000;
+    const orderTotal = orderSubtotal + orderShipping;
 
     // Create the order
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
         user_id: userId,
-        total,
+        total: orderTotal,
         phone_number: formData.phone || null,
         shipping_address: address,
         status: "pending",
+        order_type: orderType,
       })
       .select("id")
       .single();
@@ -98,7 +107,7 @@ const Checkout = () => {
     if (orderError) throw new Error(`Order failed: ${orderError.message}`);
 
     // Create order items
-    const orderItems = cartItems.map((item) => ({
+    const orderItems = items.map((item) => ({
       order_id: order.id,
       product_id: item.product_id,
       product_name: item.product_name,
@@ -106,6 +115,7 @@ const Checkout = () => {
       quantity: item.quantity,
       unit_price: item.product_price,
       total_price: item.product_price * item.quantity,
+      pricing_type: item.pricing_type || "retail",
     }));
 
     const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
