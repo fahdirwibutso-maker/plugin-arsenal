@@ -47,10 +47,17 @@ const statusColors: Record<string, "default" | "secondary" | "outline" | "destru
 
 const ORDER_STATUSES = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 
+const orderTypeColors: Record<string, "default" | "secondary" | "outline"> = {
+  retail: "secondary",
+  wholesale: "default",
+  mixed: "outline",
+};
+
 const Orders = () => {
   const queryClient = useQueryClient();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [typeFilter, setTypeFilter] = useState<"all" | "retail" | "wholesale" | "mixed">("all");
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["admin-orders"],
