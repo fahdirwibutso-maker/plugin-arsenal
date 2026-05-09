@@ -30,12 +30,14 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
   const lineMinQty = useWholesalePricing && !isBulkUnit ? (minWholesaleQty || 10) : null;
   const { toast } = useToast();
 
-  const handleAddToCart = async () => {
+    const handleAddToCart = async () => {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
       const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
-      const existingIndex = guestCart.findIndex((item: any) => item.product_id === id);
+      const existingIndex = guestCart.findIndex(
+        (item: any) => item.product_id === id && (item.pricing_type || "retail") === pricingType
+      );
 
       if (existingIndex >= 0) {
         guestCart[existingIndex].quantity += 1;
@@ -46,6 +48,8 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
           product_price: displayPrice,
           product_image: image,
           quantity: 1,
+          pricing_type: pricingType,
+          min_wholesale_qty: lineMinQty,
         });
       }
 
@@ -60,6 +64,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
       .select("*")
       .eq("user_id", user.id)
       .eq("product_id", id)
+      .eq("pricing_type", pricingType)
       .maybeSingle();
 
     if (existing) {
@@ -75,6 +80,8 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
         product_price: displayPrice,
         product_image: image,
         quantity: 1,
+        pricing_type: pricingType,
+        min_wholesale_qty: lineMinQty,
       });
     }
 
