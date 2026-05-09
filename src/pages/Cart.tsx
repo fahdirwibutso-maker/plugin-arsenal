@@ -2,7 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Minus, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -16,6 +17,8 @@ interface CartItem {
   product_image: string;
   quantity: number;
   size?: string;
+  pricing_type?: "retail" | "wholesale";
+  min_wholesale_qty?: number | null;
 }
 
 const Cart = () => {
