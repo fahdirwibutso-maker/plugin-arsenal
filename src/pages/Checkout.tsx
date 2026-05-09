@@ -133,6 +133,20 @@ const Checkout = () => {
       return;
     }
 
+    // Enforce wholesale minimums per line
+    const violation = cartItems.find((i) => {
+      const min = i.min_wholesale_qty || 0;
+      return i.pricing_type === "wholesale" && min > 0 && i.quantity < min;
+    });
+    if (violation) {
+      toast({
+        title: "Wholesale minimum not met",
+        description: `${violation.product_name} requires at least ${violation.min_wholesale_qty} units at wholesale price.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setPlacing(true);
 
     let orderId = "";
@@ -177,6 +191,8 @@ const Checkout = () => {
               product_price: item.product_price,
               product_image: item.product_image || "",
               quantity: item.quantity,
+              pricing_type: item.pricing_type || "retail",
+              min_wholesale_qty: item.min_wholesale_qty ?? null,
             });
           }
           localStorage.removeItem("guestCart");
@@ -189,7 +205,7 @@ const Checkout = () => {
 
           if (dbCart) setCartItems(dbCart as CartItem[]);
 
-          const guestOrderId = await createOrder(authData.user.id);
+          const guestOrderId = await createOrder(authData.user.id, (dbCart as CartItem[]) || cartItems);
           orderId = guestOrderId;
         }
       } else {
@@ -199,7 +215,7 @@ const Checkout = () => {
           setPlacing(false);
           return;
         }
-        orderId = await createOrder(user.id);
+        orderId = await createOrder(user.id, cartItems);
       }
 
       toast({
