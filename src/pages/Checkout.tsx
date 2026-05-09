@@ -26,6 +26,8 @@ interface CartItem {
   product_price: number;
   product_image: string;
   quantity: number;
+  pricing_type?: "retail" | "wholesale";
+  min_wholesale_qty?: number | null;
 }
 
 const Checkout = () => {
