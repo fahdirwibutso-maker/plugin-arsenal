@@ -272,33 +272,47 @@ const Orders = () => {
                 {/* Line Items */}
                 <div>
                   <h3 className="font-semibold text-sm mb-2">Items</h3>
-                  <div className="space-y-2">
-                    {orderItems.map((item) => (
-                      <div key={item.id} className="flex items-center gap-3 bg-muted/50 rounded-lg p-2">
-                        <img
-                          src={item.product_image}
-                          alt={item.product_name}
-                          className="w-10 h-10 rounded object-cover flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-sm font-medium truncate">{item.product_name}</p>
-                            <Badge
-                              variant={item.pricing_type === "wholesale" ? "default" : "secondary"}
-                              className="text-[9px] capitalize"
-                            >
-                              {item.pricing_type || "retail"}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {Number(item.unit_price).toLocaleString()} FRw × {item.quantity}
-                          </p>
-                        </div>
-                        <p className="text-sm font-semibold flex-shrink-0">
-                          {Number(item.total_price).toLocaleString()} FRw
-                        </p>
-                      </div>
-                    ))}
+                  <div className="overflow-x-auto rounded-lg border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-xs">Product</TableHead>
+                          <TableHead className="text-xs">Type</TableHead>
+                          <TableHead className="text-xs text-right">Unit × Qty</TableHead>
+                          <TableHead className="text-xs text-right">Total</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {orderItems.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-2 min-w-0">
+                                <img
+                                  src={item.product_image}
+                                  alt={item.product_name}
+                                  className="w-9 h-9 rounded object-cover flex-shrink-0"
+                                />
+                                <span className="text-sm font-medium truncate">{item.product_name}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={item.pricing_type === "wholesale" ? "default" : "secondary"}
+                                className="text-[10px] capitalize"
+                              >
+                                {item.pricing_type || "retail"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right text-xs text-muted-foreground whitespace-nowrap">
+                              {Number(item.unit_price).toLocaleString()} × {item.quantity}
+                            </TableCell>
+                            <TableCell className="text-right text-sm font-semibold whitespace-nowrap">
+                              {Number(item.total_price).toLocaleString()} FRw
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
                   </div>
                 </div>
 
