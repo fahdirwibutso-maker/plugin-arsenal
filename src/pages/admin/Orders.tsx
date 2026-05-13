@@ -302,6 +302,37 @@ const Orders = () => {
                   </div>
                 </div>
 
+                {/* Totals by pricing type (when mixed) */}
+                {(() => {
+                  const retailTotal = orderItems
+                    .filter((i) => (i.pricing_type || "retail") === "retail")
+                    .reduce((s, i) => s + Number(i.total_price), 0);
+                  const wholesaleTotal = orderItems
+                    .filter((i) => i.pricing_type === "wholesale")
+                    .reduce((s, i) => s + Number(i.total_price), 0);
+                  const hasBoth = retailTotal > 0 && wholesaleTotal > 0;
+                  if (!hasBoth) return null;
+                  return (
+                    <div>
+                      <h3 className="font-semibold text-sm mb-2">Totals by Pricing Type</h3>
+                      <div className="text-sm space-y-1.5 bg-muted/50 rounded-lg p-3">
+                        <div className="flex justify-between items-center">
+                          <span className="flex items-center gap-2">
+                            <Badge variant="secondary" className="text-[10px]">Retail</Badge>
+                          </span>
+                          <span className="font-semibold">{retailTotal.toLocaleString()} FRw</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="flex items-center gap-2">
+                            <Badge variant="default" className="text-[10px]">Wholesale</Badge>
+                          </span>
+                          <span className="font-semibold">{wholesaleTotal.toLocaleString()} FRw</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* Payment State */}
                 <div>
                   <h3 className="font-semibold text-sm mb-2 flex items-center gap-1.5">
