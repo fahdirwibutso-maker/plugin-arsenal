@@ -16,11 +16,12 @@ interface ProductCardProps {
   unit?: string;
   wholesalePrice?: number | null;
   minWholesaleQty?: number | null;
+  priority?: boolean;
 }
 
 const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty, priority = false }: ProductCardProps) => {
   const unitLower = unit.toLowerCase();
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
   const canWholesale = wholesalePrice != null && wholesalePrice > 0;
@@ -100,6 +101,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
           <LazyImage
             src={image}
             alt={name}
+            priority={priority}
             className="h-full w-full transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
