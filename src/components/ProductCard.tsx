@@ -16,11 +16,12 @@ interface ProductCardProps {
   unit?: string;
   wholesalePrice?: number | null;
   minWholesaleQty?: number | null;
+  priority?: boolean;
 }
 
 const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty, priority = false }: ProductCardProps) => {
   const unitLower = unit.toLowerCase();
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
   const canWholesale = wholesalePrice != null && wholesalePrice > 0;
