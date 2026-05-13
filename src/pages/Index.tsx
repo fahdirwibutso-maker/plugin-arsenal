@@ -152,7 +152,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
-            {featuredProducts.map((product) => (
+            {featuredProducts.map((product, idx) => (
               <ProductCard 
                 key={product.id} 
                 id={product.id}
@@ -164,6 +164,7 @@ const Index = () => {
                 unit={product.unit || "piece"}
                 wholesalePrice={product.wholesale_price}
                 minWholesaleQty={product.min_wholesale_qty}
+                priority={idx < 6}
               />
             ))}
           </div>
