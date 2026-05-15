@@ -101,6 +101,9 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
           <LazyImage
             src={image}
             alt={name}
+            width={400}
+            height={400}
+            aspectRatio="1 / 1"
             priority={priority}
             className="h-full w-full transition-transform duration-500 group-hover:scale-110"
           />
