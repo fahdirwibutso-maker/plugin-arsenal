@@ -1,0 +1,16 @@
+# WellarShop
+
+> WellarShop is an online supermarket in Rwanda offering fresh groceries, beverages and pantry staples at retail prices, with approved wholesale pricing for bulk buyers.
+
+## Pages
+
+- [Home](/): Featured products and store overview.
+- [Shop](/shop): Browse the full catalog of groceries, beverages and household items.
+- [Cart](/cart): Review items before checkout.
+- [Sign in](/auth): Customer phone login and account access.
+- [Privacy policy](/privacy): How customer data is handled.
+- [Terms of service](/terms): Terms governing use of the store.
+
+## Optional
+
+- [Order history](/orders): Past orders for signed-in customers.
