@@ -10,29 +10,41 @@ interface LazyImageProps {
   width?: number;
   /** Intrinsic height hint in CSS px — defaults to width for square product images */
   height?: number;
-  /** Responsive sizes attribute, e.g. "(min-width: 1024px) 200px, 50vw" */
+  /** Responsive sizes attribute */
   sizes?: string;
   /** Skip lazy-loading for above-the-fold images so they appear instantly */
   priority?: boolean;
+  /** Aspect ratio fallback (e.g. "1 / 1") when explicit width/height are not provided */
+  aspectRatio?: string;
 }
 
 const LazyImage = ({
   src,
   alt,
   className,
-  width = 400,
+  width,
   height,
   sizes = "(min-width: 1280px) 200px, (min-width: 768px) 25vw, 50vw",
   priority = false,
+  aspectRatio = "1 / 1",
 }: LazyImageProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const h = height ?? width;
+
+  const hasExplicitDims = width != null && height != null;
+  const renderWidth = width ?? 400;
+  const renderHeight = height ?? width ?? 400;
 
   const srcSet = buildSrcSet(src);
-  const optimizedSrc = transformedImageUrl(src, width);
+  const optimizedSrc = transformedImageUrl(src, renderWidth);
+
+  // If no explicit dims, reserve space using aspect-ratio so layout doesn't jump
+  const wrapperStyle = hasExplicitDims ? undefined : { aspectRatio };
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div
+      className={cn("relative overflow-hidden", className)}
+      style={wrapperStyle}
+    >
       {!isLoaded && (
         <>
           <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/30 to-accent/20" />
@@ -47,15 +59,14 @@ const LazyImage = ({
         srcSet={srcSet || undefined}
         sizes={srcSet ? sizes : undefined}
         alt={alt}
-        width={width}
-        height={h}
+        width={renderWidth}
+        height={renderHeight}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
         // @ts-expect-error fetchpriority is a valid HTML attr, not yet in React types
         fetchpriority={priority ? "high" : "auto"}
         onLoad={() => setIsLoaded(true)}
         onError={(e) => {
-          // Fallback to original URL if the transform endpoint fails (e.g. plan-gated)
           const img = e.currentTarget;
           if (img.src !== src) {
             img.srcset = "";
