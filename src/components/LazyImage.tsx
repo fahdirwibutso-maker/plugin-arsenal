@@ -46,12 +46,12 @@ const LazyImage = ({
       style={wrapperStyle}
     >
       {!isLoaded && (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/30 to-accent/20" />
+        <div className="absolute inset-0 bg-muted animate-pulse">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/20 to-accent/10" />
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
+            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-foreground/10 to-transparent animate-shimmer" />
           </div>
-        </>
+        </div>
       )}
 
       <img
