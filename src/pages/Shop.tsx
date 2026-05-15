@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import ProductCard from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,15 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      <Helmet>
+        <title>Shop Fresh Groceries & Wholesale — WellarShop</title>
+        <meta name="description" content="Browse WellarShop's full catalog of fresh produce, beverages, dairy, pantry and household items. Retail and wholesale pricing available." />
+        <link rel="canonical" href="https://wellar.lovable.app/shop" />
+        <meta property="og:title" content="Shop Fresh Groceries & Wholesale — WellarShop" />
+        <meta property="og:description" content="Browse fresh produce, beverages and pantry staples. Retail and wholesale pricing in Rwanda." />
+        <meta property="og:url" content="https://wellar.lovable.app/shop" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Header
         cartItemCount={cartItemCount}
         isWholesale={isWholesale}

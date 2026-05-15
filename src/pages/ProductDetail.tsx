@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Share2, ArrowLeft, Package } from "lucide-react";
@@ -127,8 +128,38 @@ const ProductDetail = () => {
     );
   }
 
+  const productUrl = `https://wellar.lovable.app/product/${product.id}`;
+  const productDesc = (product.description || `${product.name} — available at WellarShop.`).slice(0, 160);
+
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      <Helmet>
+        <title>{`${product.name} — WellarShop`}</title>
+        <meta name="description" content={productDesc} />
+        <link rel="canonical" href={productUrl} />
+        <meta property="og:title" content={`${product.name} — WellarShop`} />
+        <meta property="og:description" content={productDesc} />
+        <meta property="og:url" content={productUrl} />
+        <meta property="og:type" content="product" />
+        {product.image && <meta property="og:image" content={product.image} />}
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.name,
+          image: product.image ? [product.image] : undefined,
+          description: product.description || undefined,
+          category: product.category,
+          offers: {
+            "@type": "Offer",
+            url: productUrl,
+            priceCurrency: "RWF",
+            price: product.price,
+            availability: product.stock > 0
+              ? "https://schema.org/InStock"
+              : "https://schema.org/OutOfStock",
+          },
+        })}</script>
+      </Helmet>
       <Header cartItemCount={cartItemCount} isWholesale={isWholesale} />
 
       <main className="container px-4 sm:px-6 py-4 sm:py-6 md:py-8">
