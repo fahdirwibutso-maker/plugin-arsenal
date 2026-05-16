@@ -54,15 +54,28 @@
           }
         },
         {
-          "@type": "Store",
+          "@type": "LocalBusiness",
+          "@id": "https://wellar.lovable.app/#localbusiness",
           "name": "WellarShop",
+          "image": "https://wellar.lovable.app/pwa-512x512.png",
           "url": "https://wellar.lovable.app/",
-          "telephone": "+1 234 567 890",
+          "telephone": "+250 788 000 000",
+          "priceRange": "FRw",
           "address": {
             "@type": "PostalAddress",
             "streetAddress": "123 Market Street",
-            "addressLocality": "City Center"
-          }
+            "addressLocality": "Kigali",
+            "addressRegion": "Kigali",
+            "addressCountry": "RW"
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+              "opens": "08:00",
+              "closes": "20:00"
+            }
+          ]
         }
       ]
     }
