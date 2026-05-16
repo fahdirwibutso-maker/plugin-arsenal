@@ -262,11 +262,48 @@ const Orders = () => {
                     <MapPin className="h-4 w-4 text-primary" /> Customer & Shipping
                   </h3>
                   <div className="text-sm space-y-1 bg-muted/50 rounded-lg p-3">
-                    <p><span className="text-muted-foreground">Name:</span> {customerProfile?.username || "—"}</p>
+                    <p className="flex items-center gap-2 flex-wrap">
+                      <span className="text-muted-foreground">Name:</span> {customerProfile?.username || "—"}
+                      {customerProfile?.is_wholesale && (
+                        <Badge variant="default" className="text-[10px]">Wholesale</Badge>
+                      )}
+                    </p>
                     <p><span className="text-muted-foreground">Phone:</span> {selectedOrder.phone_number || customerProfile?.phone_number || "—"}</p>
                     <p><span className="text-muted-foreground">Address:</span> {selectedOrder.shipping_address || "—"}</p>
+                    <p className="font-mono text-xs"><span className="text-muted-foreground font-sans">Customer ID:</span> {selectedOrder.user_id?.slice(0, 8).toUpperCase() || "Guest"}</p>
+                    {customerProfile?.created_at && (
+                      <p><span className="text-muted-foreground">Member since:</span> {format(new Date(customerProfile.created_at), "PP")}</p>
+                    )}
                     <p><span className="text-muted-foreground">Ordered:</span> {format(new Date(selectedOrder.created_at), "PPpp")}</p>
+                    {selectedOrder.notes && (
+                      <p><span className="text-muted-foreground">Notes:</span> {selectedOrder.notes}</p>
+                    )}
                   </div>
+                </div>
+
+                {/* Update Status */}
+                <div>
+                  <h3 className="font-semibold text-sm mb-2">Update Order Status</h3>
+                  <Select
+                    value={selectedOrder.status}
+                    onValueChange={(value) => {
+                      updateStatusMutation.mutate({ orderId: selectedOrder.id, status: value });
+                      setSelectedOrder({ ...selectedOrder, status: value });
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <Badge variant={statusColors[selectedOrder.status] || "outline"} className="text-xs capitalize">
+                        {selectedOrder.status}
+                      </Badge>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ORDER_STATUSES.map((s) => (
+                        <SelectItem key={s} value={s} className="capitalize">
+                          {s}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Line Items */}
