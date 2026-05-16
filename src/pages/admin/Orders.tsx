@@ -104,7 +104,7 @@ const Orders = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("username, phone_number")
+        .select("username, phone_number, is_wholesale, created_at")
         .eq("user_id", selectedOrder!.user_id)
         .maybeSingle();
       if (error) throw error;
