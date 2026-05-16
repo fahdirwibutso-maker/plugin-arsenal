@@ -51,6 +51,52 @@ const Index = () => {
         <meta property="og:description" content="Shop fresh produce, beverages and pantry staples online. Retail and wholesale pricing across Rwanda." />
         <meta property="og:url" content="https://wellar.lovable.app/" />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do you deliver across Rwanda?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, WellarShop delivers nationwide across Rwanda. Standard delivery is 2,000 FRw and is free on orders above 50,000 FRw."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How do I get wholesale pricing?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Create an account and submit a wholesale application from your profile. Once an admin approves your business, wholesale prices unlock automatically across the catalog."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What payment methods do you accept?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We accept Mobile Money, credit and debit cards, and cash on delivery for eligible orders."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How fresh are your products?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We source produce and beverages daily from trusted local suppliers and offer a freshness guarantee on every order."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I return or exchange an item?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Contact our support team within 24 hours of delivery for returns or exchanges on damaged or incorrect items."
+              }
+            }
+          ]
+        })}</script>
       </Helmet>
       <Header 
         cartItemCount={cartItemCount} 
