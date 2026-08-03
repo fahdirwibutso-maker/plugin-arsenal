@@ -114,14 +114,23 @@ const Orders = () => {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ orderId, status }: { orderId: string; status: string }) => {
+      const previous = orders.find((o) => o.id === orderId)?.status;
       const { error } = await supabase
         .from("orders")
         .update({ status })
         .eq("id", orderId);
       if (error) throw error;
+      await logAudit({
+        action: "order_status_updated",
+        entityType: "order",
+        entityId: orderId,
+        description: `Order status changed from "${previous ?? "unknown"}" to "${status}"`,
+        metadata: { from: previous ?? null, to: status },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-audit-logs"] });
       toast.success("Order status updated");
     },
     onError: () => toast.error("Failed to update order status"),
