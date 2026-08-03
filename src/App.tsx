@@ -21,6 +21,7 @@ import AdminUsers from "./pages/admin/Users";
 import AdminOrders from "./pages/admin/Orders";
 import AdminWholesaleApplications from "./pages/admin/WholesaleApplications";
 import AdminAccounting from "./pages/admin/Accounting";
+import AdminAuditLogs from "./pages/admin/AuditLogs";
 import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
 import { useOrderNotifications } from "./hooks/useOrderNotifications";
@@ -70,6 +71,7 @@ function AppContent() {
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/wholesale-applications" element={<AdminWholesaleApplications />} />
           <Route path="/admin/accounting" element={<AdminAccounting />} />
+          <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
