@@ -473,6 +473,7 @@ export type Database = {
           name: string
           price: number
           stock: number
+          store_id: string | null
           unit: string
           updated_at: string
           wholesale_price: number | null
@@ -489,6 +490,7 @@ export type Database = {
           name: string
           price: number
           stock?: number
+          store_id?: string | null
           unit?: string
           updated_at?: string
           wholesale_price?: number | null
@@ -505,11 +507,20 @@ export type Database = {
           name?: string
           price?: number
           stock?: number
+          store_id?: string | null
           unit?: string
           updated_at?: string
           wholesale_price?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -538,6 +549,54 @@ export type Database = {
           updated_at?: string
           user_id?: string
           username?: string
+        }
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          location: string | null
+          logo: string | null
+          map_url: string | null
+          name: string
+          opening_hours: string | null
+          owner_id: string | null
+          phone: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          logo?: string | null
+          map_url?: string | null
+          name: string
+          opening_hours?: string | null
+          owner_id?: string | null
+          phone?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          logo?: string | null
+          map_url?: string | null
+          name?: string
+          opening_hours?: string | null
+          owner_id?: string | null
+          phone?: string | null
+          slug?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -703,6 +762,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      owns_store: {
+        Args: { _store_id: string; _user_id: string }
         Returns: boolean
       }
     }
