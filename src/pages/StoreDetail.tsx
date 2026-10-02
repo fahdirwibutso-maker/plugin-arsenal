@@ -33,11 +33,8 @@ const StoreDetail = () => {
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["store-products", store?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("is_active", true)
-        .eq("store_id" as any, store!.id);
+      const q: any = supabase.from("products").select("*").eq("is_active", true);
+      const { data, error } = await q.eq("store_id", store!.id);
       if (error) throw error;
       return data;
     },
