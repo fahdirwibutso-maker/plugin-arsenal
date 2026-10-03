@@ -1,3 +1,4 @@
+import { useStores } from "@/hooks/useStores";
 import { useState, useRef } from "react";
 import { AdminLayout } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ const Products = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const { data: stores = [] } = useStores();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: products = [], isLoading } = useQuery({
@@ -116,6 +118,7 @@ const Products = () => {
         category: formData.get("category") as string,
         unit: formData.get("unit") as string || "piece",
         image: imageUrl,
+        store_id: (formData.get("store_id") as string) && formData.get("store_id") !== "none" ? (formData.get("store_id") as string) : null,
       };
 
       if (editingProduct) {
@@ -201,6 +204,14 @@ const Products = () => {
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea id="description" name="description" defaultValue={editingProduct?.description || ""} rows={3} />
+                </div>
+                <div>
+                  <Label htmlFor="store_id">Store</Label>
+                  <select id="store_id" name="store_id" defaultValue={editingProduct?.store_id ?? "none"}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                    <option value="none">No store</option>
+                    {stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
                 </div>
                 <div>
                   <Label htmlFor="category">Category</Label>
@@ -290,6 +301,7 @@ const Products = () => {
                     <TableHead>Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead className="hidden sm:table-cell">Category</TableHead>
+                    <TableHead className="hidden md:table-cell">Store</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead className="hidden md:table-cell">Wholesale</TableHead>
                     <TableHead className="hidden sm:table-cell">Unit</TableHead>
@@ -313,6 +325,7 @@ const Products = () => {
                       </TableCell>
                       <TableCell className="font-medium max-w-[120px] truncate">{product.name}</TableCell>
                       <TableCell className="hidden sm:table-cell">{product.category}</TableCell>
+                      <TableCell className="hidden md:table-cell">{stores.find((s) => s.id === product.store_id)?.name ?? "—"}</TableCell>
                       <TableCell>{Number(product.price).toLocaleString()} FRw</TableCell>
                       <TableCell className="hidden md:table-cell">
                         {product.wholesale_price ? `${Number(product.wholesale_price).toLocaleString()} FRw` : "—"}
