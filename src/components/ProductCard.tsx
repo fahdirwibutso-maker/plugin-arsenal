@@ -17,11 +17,12 @@ interface ProductCardProps {
   wholesalePrice?: number | null;
   minWholesaleQty?: number | null;
   priority?: boolean;
+  storeName?: string;
 }
 
 const WHOLESALE_UNITS = ["bag", "carton", "kg", "pack"];
 
-const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty, priority = false }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, image, category, isWholesale = false, unit = "piece", wholesalePrice, minWholesaleQty, priority = false, storeName }: ProductCardProps) => {
   const unitLower = unit.toLowerCase();
   const isBulkUnit = WHOLESALE_UNITS.includes(unitLower);
   const canWholesale = wholesalePrice != null && wholesalePrice > 0;
@@ -113,6 +114,7 @@ const ProductCard = ({ id, name, price, image, category, isWholesale = false, un
 
       <CardContent className="p-2 sm:p-3 relative">
         <p className="text-[8px] sm:text-[9px] text-primary/70 uppercase tracking-widest mb-0.5 sm:mb-1 font-medium">{category}</p>
+        {storeName && <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate mb-0.5">🏬 {storeName}</p>}
         <Link to={`/product/${id}`}>
           <h3 className="font-semibold text-xs sm:text-sm text-foreground group-hover:text-primary transition-colors duration-300 line-clamp-2">
             {name}

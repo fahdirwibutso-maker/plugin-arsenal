@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Calculator,
   ScrollText,
+  Store,
 } from "lucide-react";
 import {
   Sidebar,
@@ -24,6 +25,7 @@ import {
 const menuItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Products", url: "/admin/products", icon: Package },
+  { title: "Stores", url: "/admin/stores", icon: Store },
   { title: "Users", url: "/admin/users", icon: Users },
   { title: "Orders", url: "/admin/orders", icon: ShoppingCart },
   { title: "Wholesale Apps", url: "/admin/wholesale-applications", icon: ClipboardList },
