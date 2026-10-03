@@ -41,7 +41,7 @@ const StoreDetail = () => {
     enabled: !!store?.id,
   });
 
-  const categories = useMemo(() => ["All", ...Array.from(new Set(products.map((p) => p.category)))], [products]);
+  const categories = useMemo(() => ["All", ...Array.from(new Set(products.map((p: any) => String(p.category))))] as string[], [products]);
   const filtered = products.filter(
     (p) =>
       (category === "All" || p.category === category) &&

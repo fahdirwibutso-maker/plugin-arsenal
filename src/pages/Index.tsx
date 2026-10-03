@@ -11,6 +11,8 @@ import supermarket2 from "@/assets/supermarket-2.jpg";
 import supermarket3 from "@/assets/supermarket-3.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useStores } from "@/hooks/useStores";
+import StoreCard from "@/components/StoreCard";
 import { useCartCount } from "@/hooks/useCartCount";
 import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 
@@ -20,15 +22,19 @@ const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [supermarket1, supermarket2, supermarket3];
   const { count: cartItemCount } = useCartCount();
+  const { data: stores = [] } = useStores();
+  const [storeFilter, setStoreFilter] = useState("all");
+  const storeMap = new Map(stores.map((s) => [s.id, s.name]));
 
   const { data: featuredProducts = [] } = useQuery({
-    queryKey: ["featured-products"],
+    queryKey: ["featured-products", storeFilter],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
         .eq("is_active", true)
-        .limit(8);
+        .eq(storeFilter === "all" ? "is_active" : "store_id", storeFilter === "all" ? true : storeFilter)
+        .limit(12);
       if (error) throw error;
       return data;
     },
@@ -191,6 +197,21 @@ const Index = () => {
         </section>
       )}
 
+      {/* Stores */}
+      {stores.length > 0 && (
+        <section className="pt-6 sm:pt-8">
+          <div className="container px-4 sm:px-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg sm:text-2xl font-bold text-foreground">Our Stores</h2>
+              <Link to="/stores" className="text-xs text-primary">See all</Link>
+            </div>
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {stores.map((s) => <StoreCard key={s.id} store={s} />)}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Featured Products */}
       <section className="py-8 sm:py-12 md:py-16">
         <div className="container px-4 sm:px-6">
@@ -207,6 +228,11 @@ const Index = () => {
             </Link>
           </div>
           
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {[{ id: "all", name: "All stores" }, ...stores].map((s) => (
+              <Button key={s.id} size="sm" variant={storeFilter === s.id ? "default" : "outline"} className="h-7 text-xs px-2.5" onClick={() => setStoreFilter(s.id)}>{s.name}</Button>
+            ))}
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             {featuredProducts.map((product, idx) => (
               <ProductCard 
@@ -221,6 +247,7 @@ const Index = () => {
                 wholesalePrice={product.wholesale_price}
                 minWholesaleQty={product.min_wholesale_qty}
                 priority={idx < 6}
+                storeName={product.store_id ? storeMap.get(product.store_id) : undefined}
               />
             ))}
           </div>

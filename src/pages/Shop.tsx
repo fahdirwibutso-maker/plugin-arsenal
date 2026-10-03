@@ -12,6 +12,7 @@ import { useWholesaleStatus } from "@/hooks/useWholesaleStatus";
 import Footer from "@/components/Footer";
 import WholesaleApplicationForm from "@/components/WholesaleApplicationForm";
 import { supabase as sb } from "@/integrations/supabase/client";
+import { useStores } from "@/hooks/useStores";
 
 const categories = [
   "All", "Fresh Fruits", "Vegetables", "Dairy", "Meat", "Bakery",
@@ -25,6 +26,9 @@ const Shop = () => {
   const { count: cartItemCount } = useCartCount();
   const { isWholesale } = useWholesaleStatus();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [storeFilter, setStoreFilter] = useState("all");
+  const { data: stores = [] } = useStores();
+  const storeMap = useMemo(() => new Map(stores.map((s) => [s.id, s.name])), [stores]);
 
   useEffect(() => {
     sb.auth.getSession().then(({ data: { session } }) => setIsLoggedIn(!!session?.user));
@@ -48,6 +52,7 @@ const Shop = () => {
     let filtered = selectedCategory === "All"
       ? products
       : products.filter(p => p.category === selectedCategory);
+    if (storeFilter !== "all") filtered = filtered.filter(p => p.store_id === storeFilter);
 
     if (searchQuery.trim()) {
       filtered = filtered.filter(p =>
@@ -65,7 +70,7 @@ const Shop = () => {
     }
 
     return filtered;
-  }, [selectedCategory, searchQuery, sortBy, products]);
+  }, [selectedCategory, searchQuery, sortBy, products, storeFilter]);
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
@@ -123,6 +128,14 @@ const Shop = () => {
             ))}
           </div>
 
+          <div className="flex flex-col sm:flex-row gap-2">
+          <Select value={storeFilter} onValueChange={setStoreFilter}>
+            <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Store" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All stores</SelectItem>
+              {stores.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <Select value={sortBy} onValueChange={setSortBy}>
             <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Sort by" />
@@ -134,6 +147,7 @@ const Shop = () => {
               <SelectItem value="newest">Newest</SelectItem>
             </SelectContent>
           </Select>
+          </div>
         </div>
 
         {isLoading ? (
@@ -157,6 +171,7 @@ const Shop = () => {
                 wholesalePrice={product.wholesale_price}
                 minWholesaleQty={product.min_wholesale_qty}
                 priority={idx < 6}
+                storeName={product.store_id ? storeMap.get(product.store_id) : undefined}
               />
             ))}
           </div>
