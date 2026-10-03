@@ -1,0 +1,1 @@
+- AI product recommendations run in the recommend-products backend function (streams the AI Gateway, returns JSON); keeps the AI key server-side.
