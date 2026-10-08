@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791469704016,
+      "tag": "0000_fix_stores_access",
+      "breakpoints": true
+    }
+  ]
+}
