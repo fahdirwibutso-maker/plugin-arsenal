@@ -37,6 +37,14 @@ const AdminStores = () => {
     },
   });
 
+  const { data: users = [] } = useQuery({
+    queryKey: ["admin-store-owner-options"],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("user_id, username, phone_number").order("username");
+      return data ?? [];
+    },
+  });
+
   const refresh = () => ["admin-stores", "stores", "admin-store-counts"].forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
 
   const save = useMutation({
@@ -44,7 +52,7 @@ const AdminStores = () => {
       const row = {
         name: s.name!, slug: s.slug || slugify(s.name!), logo: s.logo || null, description: s.description || null,
         location: s.location || null, map_url: s.map_url || null, phone: s.phone || null,
-        opening_hours: s.opening_hours || null, is_active: s.is_active ?? true,
+        opening_hours: s.opening_hours || null, owner_id: s.owner_id || null, is_active: s.is_active ?? true,
       };
       const { error } = s.id
         ? await supabase.from("stores").update(row).eq("id", s.id)
@@ -119,6 +127,13 @@ const AdminStores = () => {
             {field("map_url", "Map link")}
             {field("phone", "Phone")}
             {field("opening_hours", "Opening hours")}
+            <div>
+              <Label>Store owner (can manage this store's products)</Label>
+              <select className="w-full bg-background border rounded-md h-10 px-2 text-sm" value={editing?.owner_id ?? ""} onChange={(e) => setEditing({ ...editing, owner_id: e.target.value || null })}>
+                <option value="">No owner</option>
+                {users.map((u) => <option key={u.user_id} value={u.user_id}>{u.username || "(no name)"} {u.phone_number ? `· ${u.phone_number}` : ""}</option>)}
+              </select>
+            </div>
             <div className="flex items-center gap-2">
               <Switch checked={editing?.is_active ?? true} onCheckedChange={(v) => setEditing({ ...editing, is_active: v })} />
               <Label>Active</Label>

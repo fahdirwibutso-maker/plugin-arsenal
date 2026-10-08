@@ -26,6 +26,7 @@ import AdminStores from "./pages/admin/Stores";
 import Stores from "./pages/Stores";
 import StoreDetail from "./pages/StoreDetail";
 import Assistant from "./pages/Assistant";
+import MyStore from "./pages/MyStore";
 import InstallPrompt from "./components/InstallPrompt";
 import SplashScreen from "./components/SplashScreen";
 import { useOrderNotifications } from "./hooks/useOrderNotifications";
@@ -79,6 +80,7 @@ function AppContent() {
           <Route path="/stores" element={<Stores />} />
           <Route path="/store/:slug" element={<StoreDetail />} />
           <Route path="/assistant" element={<Assistant />} />
+          <Route path="/my-store" element={<MyStore />} />
           <Route path="/admin/stores" element={<AdminStores />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

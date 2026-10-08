@@ -69,6 +69,7 @@ const Header = ({
   const navLinks = [
     { name: "Stores", path: "/stores" },
     { name: "Assistant", path: "/assistant" },
+    { name: "My Store", path: "/my-store" },
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
     { name: "Collections", path: "/shop" },
