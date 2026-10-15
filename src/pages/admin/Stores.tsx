@@ -93,7 +93,7 @@ const AdminStores = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead><TableHead>Location</TableHead><TableHead>Products</TableHead>
+              <TableHead>Name</TableHead><TableHead>Location</TableHead><TableHead>Owner</TableHead><TableHead>Products</TableHead>
               <TableHead>Active</TableHead><TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -102,6 +102,7 @@ const AdminStores = () => {
               <TableRow key={s.id}>
                 <TableCell className="font-medium">{s.name}</TableCell>
                 <TableCell>{s.location ?? "—"}</TableCell>
+                <TableCell>{s.owner_id ? (users.find((u) => u.user_id === s.owner_id)?.username || "Assigned") : "—"}</TableCell>
                 <TableCell>{counts[s.id] ?? 0}</TableCell>
                 <TableCell>{s.is_active ? "Yes" : "No"}</TableCell>
                 <TableCell className="space-x-1">
