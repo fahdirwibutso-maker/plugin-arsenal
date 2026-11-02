@@ -333,6 +333,7 @@ export type Database = {
           product_image: string
           product_name: string
           quantity: number
+          store_id: string | null
           total_price: number
           unit_price: number
         }
@@ -345,6 +346,7 @@ export type Database = {
           product_image?: string
           product_name: string
           quantity?: number
+          store_id?: string | null
           total_price: number
           unit_price: number
         }
@@ -357,6 +359,7 @@ export type Database = {
           product_image?: string
           product_name?: string
           quantity?: number
+          store_id?: string | null
           total_price?: number
           unit_price?: number
         }
@@ -373,6 +376,13 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -551,6 +561,48 @@ export type Database = {
           username?: string
         }
         Relationships: []
+      }
+      store_order_activity: {
+        Row: {
+          id: string
+          notes: string
+          order_id: string
+          status: string
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          notes?: string
+          order_id: string
+          status?: string
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          notes?: string
+          order_id?: string
+          status?: string
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_order_activity_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_order_activity_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       stores: {
         Row: {
@@ -757,6 +809,7 @@ export type Database = {
           user_count: number
         }[]
       }
+      get_store_orders: { Args: { _store_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

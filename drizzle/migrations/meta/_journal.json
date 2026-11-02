@@ -8,6 +8,13 @@
       "when": 1791469704016,
       "tag": "0000_fix_stores_access",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793608273983,
+      "tag": "0001_store_owner_control_panel",
+      "breakpoints": true
     }
   ]
 }
