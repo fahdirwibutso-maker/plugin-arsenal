@@ -98,7 +98,8 @@ const Auth = () => {
           .maybeSingle();
 
         toast.success("Logged in successfully!");
-        navigate(roleData ? "/admin" : "/shop");
+        const { data: owned } = await supabase.from("stores").select("id").eq("owner_id", data.user.id).limit(1);
+        navigate(roleData ? "/admin" : owned?.length ? "/my-store" : "/shop");
       }
     } catch (error: any) {
       if (error instanceof z.ZodError) {
