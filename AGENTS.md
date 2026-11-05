@@ -1,3 +1,4 @@
 - AI product recommendations run in the recommend-products backend function (streams the AI Gateway, returns JSON); keeps the AI key server-side.
 - Owner panels key private queries by authenticated user and store; server policies enforce ownership independently of navigation.
 - Order items snapshot store attribution on insert; owner order retrieval exposes only that store's lines, with separate per-store fulfillment so mixed-store orders are not changed globally.
+- Assistant direct product searches use a short-lived public catalog cache; AI requests return full selected products and cache successful answers against current catalog contents to avoid a second fetch and stale pricing.
