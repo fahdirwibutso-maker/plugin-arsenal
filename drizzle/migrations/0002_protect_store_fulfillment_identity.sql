@@ -1,0 +1,4 @@
+CREATE OR REPLACE FUNCTION public.protect_store_activity_identity() RETURNS trigger LANGUAGE plpgsql SET search_path = public AS $$ BEGIN IF NEW.store_id IS DISTINCT FROM OLD.store_id OR NEW.order_id IS DISTINCT FROM OLD.order_id THEN RAISE EXCEPTION 'Store and order cannot be changed'; END IF; RETURN NEW; END $$;
+CREATE TRIGGER protect_store_activity_identity BEFORE UPDATE ON public.store_order_activity FOR EACH ROW EXECUTE FUNCTION public.protect_store_activity_identity();
+REVOKE ALL ON FUNCTION public.protect_store_activity_identity() FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.snapshot_order_item_store() FROM PUBLIC, anon, authenticated;
