@@ -562,6 +562,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          data: Json
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          data?: Json
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          data?: Json
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       store_order_activity: {
         Row: {
           id: string
@@ -610,45 +628,54 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          is_open: boolean
           location: string | null
           logo: string | null
           map_url: string | null
           name: string
           opening_hours: string | null
+          owner_control_approved: boolean
           owner_id: string | null
           phone: string | null
           slug: string
           updated_at: string
+          weekly_hours: Json | null
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: string
           is_active?: boolean
+          is_open?: boolean
           location?: string | null
           logo?: string | null
           map_url?: string | null
           name: string
           opening_hours?: string | null
+          owner_control_approved?: boolean
           owner_id?: string | null
           phone?: string | null
           slug: string
           updated_at?: string
+          weekly_hours?: Json | null
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: string
           is_active?: boolean
+          is_open?: boolean
           location?: string | null
           logo?: string | null
           map_url?: string | null
           name?: string
           opening_hours?: string | null
+          owner_control_approved?: boolean
           owner_id?: string | null
           phone?: string | null
           slug?: string
           updated_at?: string
+          weekly_hours?: Json | null
         }
         Relationships: []
       }
